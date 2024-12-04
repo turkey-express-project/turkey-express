@@ -4,6 +4,7 @@ import com.currency.turkey_express.global.base.enums.memu.MenuStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class Menu extends BaseEntity {
     private String name;
 
     @Column(name = "menu_price", nullable = false)
-    private int price;
+    private BigDecimal price;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "menu_status", nullable = false, length = 50)
@@ -37,7 +38,7 @@ public class Menu extends BaseEntity {
     private List<MenuTopCategory> topCategoris = new ArrayList<>();
 
 
-    public Menu(String name, int price, MenuStatus status, String image) {
+    public Menu(String name, BigDecimal price, MenuStatus status, String image) {
         this.name = name;
         this.price = price;
         this.status = status;
