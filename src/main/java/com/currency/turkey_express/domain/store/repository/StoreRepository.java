@@ -10,7 +10,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
 	//jPQL 사용해서 유저의 가게 개수를 count 합니다
 	@Query(
-		"SELECT COUNT(s) FROM Store AS s WHERE s.user = :user"
+		"SELECT COUNT(s) FROM Store AS s WHERE s.user = :user AND s.storeStatus = 'OPEN'"
 	)
 	int findAllByUserId(@Param("user") User user);
 }
