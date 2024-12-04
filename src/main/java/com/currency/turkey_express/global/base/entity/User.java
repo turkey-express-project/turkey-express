@@ -45,5 +45,4 @@ public class User extends BaseEntity {
 	@Column(name = "total_point")
 	private Integer totalPoint; //총합 포인트
 
-
 }

@@ -47,11 +47,11 @@ public class Store extends BaseEntity{
 	}
 
 	public Store(){}
-	public Store(String storeName, Time openTime, Time closeTime, StoreStatus storeStatus, Category category, BigDecimal orderAmount) {
+	public Store(String storeName, Time openTime, Time closeTime, Category category, BigDecimal orderAmount) {
 		this.storeName = storeName;
 		this.openTime = openTime;
 		this.closeTime = closeTime;
-		this.storeStatus = storeStatus;
+		this.storeStatus = StoreStatus.OPEN;
 		this.category = category;
 		this.orderAmount = orderAmount;
 	}
