@@ -3,8 +3,6 @@ package com.currency.turkey_express.global.base.entity;
 import com.currency.turkey_express.global.base.enums.coupon.CouponStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -32,7 +30,7 @@ public class CouponList {
 	@JoinColumn(name = "coupon_id")
 	private Coupon coupon; //쿠폰 id(외래키)
 
-	@Enumerated(EnumType.STRING)
+	//	@Enumerated(EnumType.STRING)
 	@Column(name = "status")
 	private CouponStatus status; //쿠폰 상태
 
