@@ -34,6 +34,24 @@ public class StoreService {
 		return new StoreResponseDto(store);
 	}
 
+	@Transactional
+	public StoreResponseDto updateStore(Long storeId, StoreRequestDto dto) {
+		//이 부분은 로그인 세션이 아직 구현되지 않아 임의로 작성한 부분입니다.
+		//세션 구현시 세션 아이디를 통해 유저 데이터를 받아올 예정입니다.
+		Long id = 1L;
+		User user = userRepository.findById(id).orElseThrow(
+			()->new RuntimeException("User Not Found")
+		);
+
+		Store store = storeRepository.findById(storeId).orElseThrow(
+			()->new RuntimeException("Store Not Found")
+		);
+		store.setStore(dto);
+		store.setUser(user);
+		storeRepository.save(store);
+		return new StoreResponseDto(store);
+	}
+
 	//한 계정당 생성 가능한 가게의 수를 확인
 	private void isFullStores(User user){
 		int countStores = storeRepository.findAllByUserId(user);
