@@ -25,8 +25,7 @@ public class Point extends BaseEntity {
 	@JoinColumn(name = "user_id")
 	private User user; //사용자 id(외래키)
 
-	@Column(name = "point")
+	@Column(nullable = false)
 	private Integer point; //적립금액
-
 
 }
