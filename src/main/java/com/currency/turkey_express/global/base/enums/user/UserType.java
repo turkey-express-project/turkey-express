@@ -4,5 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum UserType {
-
+	ADMIN,
+	USER,
+	OWNER
 }
