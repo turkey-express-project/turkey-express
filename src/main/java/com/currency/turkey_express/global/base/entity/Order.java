@@ -9,8 +9,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 
 @Table(name = "order")
@@ -22,9 +25,9 @@ public class Order extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	//@ManyToOne
-	//@JoinColumn(name = "store_id")
-	//private Store store;
+	@ManyToOne
+	@JoinColumn(name = "store_id")
+	private Store store;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id")
@@ -47,8 +50,7 @@ public class Order extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private OrderStatus orderStatus;
 
-//	@OneToMany(mappedBy = "order")
-//	private List<OrderMenuOption> orderMenuOptions = new ArrayList<>();
-
+	@OneToMany(mappedBy = "order")
+	private List<OrderMenuOption> orderMenuOptions = new ArrayList<>();
 
 }
