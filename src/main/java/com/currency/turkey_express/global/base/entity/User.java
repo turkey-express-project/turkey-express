@@ -39,7 +39,6 @@ public class User extends BaseEntity {
 	@Column(nullable = false)
 	private UserStatus userStatus; //유저 상태
 
-	@Column(nullable = true)
 	private LocalDateTime leavedAt; //탈퇴일
 
 	@Column(nullable = false)
