@@ -17,14 +17,13 @@ public class Coupon extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id; //쿠폰 id
 
-	@Column(name = "coupon_name")
+	@Column(nullable = false)
 	private String couponName; //쿠폰 이름
 
-	@Column(name = "discount_value")
+	@Column(nullable = false)
 	private Integer discountValue; //쿠폰 할인률
 
-	@Column(name = "max_discount")
+	@Column(nullable = false)
 	private Integer maxDiscount; //쿠폰 최대 할인금액
-
 
 }

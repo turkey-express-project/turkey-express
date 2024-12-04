@@ -1,6 +1,7 @@
 package com.currency.turkey_express.global.base.entity;
 
 import com.currency.turkey_express.global.base.enums.order.OrderStatus;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -15,10 +16,13 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Table(name = "order")
+@Table(name = "orders")
 @Getter
 @Entity
+@NoArgsConstructor
 public class Order extends BaseEntity {
 
 	@Id
@@ -33,24 +37,49 @@ public class Order extends BaseEntity {
 	@JoinColumn(name = "user_id")
 	private User user;
 
+	@Column(nullable = false)
 	private String address;
 
+	@Column(nullable = false)
 	private String phoneNumber;
 
+	@Column(nullable = false)
 	private String menuName;
 
+	@Column(nullable = false)
 	private BigDecimal menuPrice;
 
+	@Column(nullable = false)
 	private BigDecimal pointPrice;
 
+	@Column(nullable = false)
 	private BigDecimal couponPrice;
 
+	@Column(nullable = false)
 	private BigDecimal totalOrderPrice;
 
+	@Setter
 	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
 	private OrderStatus orderStatus;
 
 	@OneToMany(mappedBy = "order")
 	private List<OrderMenuOption> orderMenuOptions = new ArrayList<>();
 
+	public Order(Store store, User user, String address, String phoneNumber, String menuName,
+		BigDecimal menuPrice, BigDecimal pointPrice, BigDecimal couponPrice,
+		BigDecimal totalOrderPrice,
+		OrderStatus orderStatus, List<OrderMenuOption> orderMenuOptions) {
+		this.store = store;
+		this.user = user;
+		this.address = address;
+		this.phoneNumber = phoneNumber;
+		this.menuName = menuName;
+		this.menuPrice = menuPrice;
+		this.pointPrice = pointPrice;
+		this.couponPrice = couponPrice;
+		this.totalOrderPrice = totalOrderPrice;
+		this.orderStatus = orderStatus;
+		this.orderMenuOptions = orderMenuOptions;
+	}
 }

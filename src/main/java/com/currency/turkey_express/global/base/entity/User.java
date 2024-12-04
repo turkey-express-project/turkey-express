@@ -25,25 +25,23 @@ public class User extends BaseEntity {
 	@Column(name = "email", unique = true)
 	private String email; //이메일
 
-	@Column(name = "user_nickname")
+	@Column(nullable = false)
 	private String userNickname; //닉네임
 
-	@Column(name = "password")
+	@Column(nullable = false)
 	private String password; //비밀번호
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "user_type")
+	@Column(nullable = false)
 	private UserType userType; //유저 타입
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "user_status")
+	@Column(nullable = false)
 	private UserStatus userStatus; //유저 상태
 
-	@Column(name = "leaved_at")
 	private LocalDateTime leavedAt; //탈퇴일
 
-	@Column(name = "total_point")
+	@Column(nullable = false)
 	private Integer totalPoint; //총합 포인트
-
 
 }

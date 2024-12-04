@@ -6,11 +6,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Table(name = "favorite")
 @Getter
 @Entity
-public class Favorite extends BaseEntity{
+@NoArgsConstructor
+public class Favorite extends BaseEntity {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -20,10 +25,8 @@ public class Favorite extends BaseEntity{
 	private User user;
 
 	@ManyToOne
-	@JoinColumn(name = "store_id",nullable = false)
+	@JoinColumn(name = "store_id", nullable = false)
 	private Store store;
-
-	public Favorite() {}
 
 	public Favorite(User user, Store store) {
 		this.user = user;
