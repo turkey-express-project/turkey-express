@@ -8,6 +8,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import java.math.BigDecimal;
 import java.sql.Time;
 import lombok.Getter;
@@ -36,13 +38,13 @@ public class Store extends BaseEntity{
 
 	private BigDecimal orderAmount;
 
-	//@ManyToOne
-	//@JoinColumn(name = "user_id", nullable = false)
-	//private User user;
+	@ManyToOne
+	@JoinColumn(name = "user_id", nullable = false)
+	private User user;
 
-//	public void setUser(User user){
-//		this.user = user;
-//	}
+	public void setUser(User user){
+		this.user = user;
+	}
 
 	public Store(){}
 	public Store(String storeName, Time openTime, Time closeTime, StoreStatus storeStatus, Category category, BigDecimal orderAmount) {
