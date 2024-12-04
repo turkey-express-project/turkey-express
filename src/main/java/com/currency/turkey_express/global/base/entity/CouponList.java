@@ -33,8 +33,7 @@ public class CouponList {
 	private Coupon coupon; //쿠폰 id(외래키)
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "status")
+	@Column(nullable = false)
 	private CouponStatus status; //쿠폰 상태
-
 
 }
