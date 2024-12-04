@@ -32,7 +32,7 @@ public class User extends BaseEntity {
 	private String userNickname; //닉네임
 
 	@NotBlank
-	@Column(name = "email", unique = true)
+	@Column(name = "password", unique = true)
 	private String password; //비밀번호
 
 	@Enumerated(EnumType.STRING)
