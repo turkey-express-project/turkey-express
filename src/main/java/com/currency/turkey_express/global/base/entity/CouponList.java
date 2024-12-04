@@ -36,5 +36,4 @@ public class CouponList {
 	@Column(name = "status")
 	private CouponStatus status; //쿠폰 상태
 
-
 }
