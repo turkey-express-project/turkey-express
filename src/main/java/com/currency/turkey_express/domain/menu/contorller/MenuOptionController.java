@@ -24,10 +24,9 @@ public class MenuOptionController {
     @PostMapping
     public ResponseEntity<MenuTopCategory> createTopCategory(
             @PathVariable Long menuId,
-            @RequestBody MenuTopCategoryRequestDto menuTopCategoryRequestDto,
-            @SessionAttribute User user) {
+            @RequestBody MenuTopCategoryRequestDto menuTopCategoryRequestDto) {
 
-        MenuTopCategory MenuTopCategory = menuOptionService.createTopCategory(menuId, menuTopCategoryRequestDto, user);
+        MenuTopCategory MenuTopCategory = menuOptionService.createTopCategory(menuId, menuTopCategoryRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(MenuTopCategory);
 
@@ -38,10 +37,9 @@ public class MenuOptionController {
     @PostMapping("/{topCategoryId}/subCategories")
     public ResponseEntity<MenuSubCategory> createSubCategory(
             @PathVariable Long topCategoryId,
-            @RequestBody MenuSubCategoryRequestDto menuSubCategoryRequestDto,
-            @SessionAttribute User user) {
+            @RequestBody MenuSubCategoryRequestDto menuSubCategoryRequestDto) {
 
-        MenuSubCategory menuSubCategory = menuOptionService.createSubCategory(topCategoryId, menuSubCategoryRequestDto, user);
+        MenuSubCategory menuSubCategory = menuOptionService.createSubCategory(topCategoryId, menuSubCategoryRequestDto);
 
         return ResponseEntity.status((HttpStatus.CREATED)).body(menuSubCategory);
 
