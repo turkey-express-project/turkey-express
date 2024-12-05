@@ -1,5 +1,6 @@
 package com.currency.turkey_express.global.base.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -26,6 +27,7 @@ public class MenuSubCategory extends BaseEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "top_category_id", nullable = false)
+	@JsonBackReference
 	private MenuTopCategory topCategory;
 
 	@Column(nullable = false, length = 20)

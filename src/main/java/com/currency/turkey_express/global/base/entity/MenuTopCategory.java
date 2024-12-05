@@ -1,6 +1,8 @@
 package com.currency.turkey_express.global.base.entity;
 
 import com.currency.turkey_express.global.base.enums.memu.NecessaryStatus;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,8 +31,9 @@ public class MenuTopCategory extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "menu_id", nullable = false)
+	@JsonBackReference
 	private Menu menu;
 
 	@Column(nullable = false, length = 20)
@@ -41,6 +44,7 @@ public class MenuTopCategory extends BaseEntity {
 	protected NecessaryStatus necessary;        // ENUM: OPTIONAL, REQUIRED
 
 	@OneToMany(mappedBy = "topCategory", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonManagedReference
 	private List<MenuSubCategory> subCategories = new ArrayList<>();
 
 
