@@ -15,4 +15,5 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
 			"FROM Menu AS m WHERE m.store.id = :storeId"
 	)
 	List<MenuInStoreResponseDto> findAllByStoreId(Long storeId);
+
 }

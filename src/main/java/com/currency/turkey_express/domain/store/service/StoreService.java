@@ -10,6 +10,7 @@ import com.currency.turkey_express.domain.store.repository.StoreRepository;
 import com.currency.turkey_express.domain.user.repository.UserRepository;
 import com.currency.turkey_express.global.base.entity.Store;
 import com.currency.turkey_express.global.base.entity.User;
+import com.currency.turkey_express.global.base.enums.store.Category;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -61,16 +62,15 @@ public class StoreService {
 	}
 
 
-	//미완성
-//	public List<StoreResponseDto> findByFilters(String name, String category, Long minReviews, Double minRating) {
-//		List<StoreResponseDto> storeList;
-//		if(name != null || category != null || minReviews != null || minRating != null){
-//			storeList = storeRepository.findByFilters(name, category, minReviews, minRating);
-//		}else {
-//			storeList = storeRepository.findAllStores();
-//		}
-//		return storeList;
-//	}
+	public List<StoreResponseDto> findByFilters(String name, Category category, Long minReviews, Double minRating) {
+		List<StoreResponseDto> storeList;
+		if(name != null || category != null || minReviews != null || minRating != null){
+			storeList = storeRepository.findByFilters(name, category, minReviews, minRating);
+		}else {
+			storeList = storeRepository.findAllStores();
+		}
+		return storeList;
+	}
 
 	//가게 단건 조회 (즐겨찾기 갯수, 메뉴 리스트 함께 반환)
 	public StoreMenuResponseDto findByStoreIdInMenus(Long storeId) {

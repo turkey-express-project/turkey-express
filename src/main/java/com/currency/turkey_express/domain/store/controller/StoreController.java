@@ -4,6 +4,7 @@ import com.currency.turkey_express.domain.store.dto.StoreMenuResponseDto;
 import com.currency.turkey_express.domain.store.dto.StoreRequestDto;
 import com.currency.turkey_express.domain.store.dto.StoreResponseDto;
 import com.currency.turkey_express.domain.store.service.StoreService;
+import com.currency.turkey_express.global.base.enums.store.Category;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -40,14 +41,14 @@ public class StoreController {
 		return new ResponseEntity<>(storeResponseDto, HttpStatus.OK);
 	}
 
-//	@GetMapping
-//	public ResponseEntity<List<StoreResponseDto>> getAllStores(
-//		@RequestParam(required = false) String name, @RequestParam(required = false) String category,
-//		@RequestParam(required = false) Long min_reviews, @RequestParam(required = false) Double min_rating
-//	) {
-//		List<StoreResponseDto> storeList = storeService.findByFilters(name, category, min_reviews, min_rating);
-//		return new ResponseEntity<>(storeList, HttpStatus.OK);
-//	}
+	@GetMapping
+	public ResponseEntity<List<StoreResponseDto>> getAllStores(
+		@RequestParam(required = false) String name, @RequestParam(required = false) Category category,
+		@RequestParam(required = false) Long min_reviews, @RequestParam(required = false) Double min_rating
+	) {
+		List<StoreResponseDto> storeList = storeService.findByFilters(name, category, min_reviews, min_rating);
+		return new ResponseEntity<>(storeList, HttpStatus.OK);
+	}
 
 	//가게 단건 조회
 	@GetMapping("/{store_id}")
