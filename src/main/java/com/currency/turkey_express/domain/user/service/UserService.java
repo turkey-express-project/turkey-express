@@ -43,4 +43,16 @@ public class UserService {
 	//로그인
 //	public User login(String email, String password) {
 //	}
+
+	//회원탈퇴
+	public UserResponseDto userDelete(Long userId, String password, Long loginUserId) {
+
+		//로그인한 사용자랑 ID가 일치하는지 확인
+		if (!userId.equals(loginUserId)) {
+			throw new BusinessException(ExceptionType.USER_NOT_MATCH);
+		}
+
+		User user = userRepository.findByIdOrElseThrow(userId);
+	}
+
 }
