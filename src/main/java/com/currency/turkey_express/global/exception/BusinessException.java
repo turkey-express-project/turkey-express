@@ -8,6 +8,5 @@ public class BusinessException extends RuntimeException {
 	private ExceptionType exceptionType;
 
 	public BusinessException(ExceptionType exceptionType) {
-		this.exceptionType = exceptionType;
 	}
 }
