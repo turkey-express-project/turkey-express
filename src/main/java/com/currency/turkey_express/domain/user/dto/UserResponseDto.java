@@ -64,6 +64,14 @@ public class UserResponseDto {
 			user.getCreatedAt(),
 			user.getModifiedAt()
 		);
-
 	}
+
+	//회원 탈퇴
+	public UserResponseDto(User user) {
+		this.id = user.getId();
+		this.userNickname = user.getUserNickname();
+		this.userStatus = user.getUserStatus();
+	}
+	
+
 }

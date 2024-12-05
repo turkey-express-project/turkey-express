@@ -58,4 +58,8 @@ public class User extends BaseEntity {
 	public User() {
 	}
 
+	//유저 상태 변경
+	public void updateUserStatus(UserStatus userStatus) {
+		this.userStatus = userStatus;
+	}
 }
