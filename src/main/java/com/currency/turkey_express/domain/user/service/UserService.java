@@ -41,18 +41,50 @@ public class UserService {
 	}
 
 	//로그인
-//	public User login(String email, String password) {
-//	}
+	public User login(String email, String password) {
+
+		//사용자 email 확인
+		User user = userRepository.findByEmailOrElseThrow(email);
+
+		//탈퇴 확인
+		if (user.getUserStatus().equals(UserStatus.DELETE)) {
+			throw new BusinessException(ExceptionType.DELETED_USER);
+		}
+
+		//비밀번호 일치하는지 확인
+		if (!passwordEncoder.matches(password, user.getPassword())) {
+			throw new BusinessException(ExceptionType.PASSWORD_NOT_MATCH);
+		}
+
+		return user;
+	}
 
 	//회원탈퇴
+	@Transactional
 	public UserResponseDto userDelete(Long userId, String password, Long loginUserId) {
+
+		//사용자 id 확인
+		User user = userRepository.findByIdOrElseThrow(userId);
 
 		//로그인한 사용자랑 ID가 일치하는지 확인
 		if (!userId.equals(loginUserId)) {
 			throw new BusinessException(ExceptionType.USER_NOT_MATCH);
 		}
 
-		User user = userRepository.findByIdOrElseThrow(userId);
+		// 탈퇴 확인
+		if (user.getUserStatus().equals(UserStatus.DELETE)) {
+			throw new BusinessException(ExceptionType.DELETED_USER);
+		}
+
+		//비밀번호 일치하는지 확인
+		if (!passwordEncoder.matches(password, user.getPassword())) {
+			throw new BusinessException(ExceptionType.PASSWORD_NOT_MATCH);
+		}
+
+		//유저 상태 변경
+		user.updateUserStatus(UserStatus.DELETE);
+
+		return new UserResponseDto(user);
 	}
 
 }
