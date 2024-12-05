@@ -7,10 +7,14 @@ import lombok.Getter;
 public class LoginRequestDto {
 
 	@NotBlank
-	private String email; //이메일
+	private final String email; //이메일
 
 	@NotBlank
-	private String password; //비밀번호
+	private final String password; //비밀번호
 
 
+	public LoginRequestDto(String email, String password) {
+		this.email = email;
+		this.password = password;
+	}
 }
