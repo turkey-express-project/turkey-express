@@ -1,5 +1,6 @@
 package com.currency.turkey_express.global.base.entity;
 
+import com.currency.turkey_express.domain.store.dto.StoreRequestDto;
 import com.currency.turkey_express.global.base.enums.store.Category;
 import com.currency.turkey_express.global.base.enums.store.StoreStatus;
 import jakarta.persistence.Column;
@@ -54,13 +55,30 @@ public class Store extends BaseEntity {
 	private User user;
 
 
-	public Store(String storeName, Time openTime, Time closeTime, StoreStatus storeStatus,
+	public Store(String storeName, Time openTime, Time closeTime,
 		Category category, BigDecimal orderAmount) {
 		this.storeName = storeName;
 		this.openTime = openTime;
 		this.closeTime = closeTime;
-		this.storeStatus = storeStatus;
+		this.storeStatus = StoreStatus.OPEN;
 		this.category = category;
 		this.orderAmount = orderAmount;
+	}
+
+	public void setStore(StoreRequestDto dto){
+		this.storeName = dto.getStoreName();
+		this.openTime = dto.getOpenTime();
+		this.closeTime = dto.getCloseTime();
+		this.storeStatus = StoreStatus.OPEN;
+		this.category = dto.getCategory();
+		this.orderAmount = dto.getOrderAmount();
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public void setStoreStatusClose() {
+		this.storeStatus = StoreStatus.CLOSE;
 	}
 }
