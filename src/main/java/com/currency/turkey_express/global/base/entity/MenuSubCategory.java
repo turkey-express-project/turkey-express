@@ -12,6 +12,8 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Getter
 @Entity
 @Table(name = "sub_category")
@@ -30,10 +32,10 @@ public class MenuSubCategory extends BaseEntity {
 	private String content;
 
 	@Column(nullable = false)
-	private int extraPrice;
+	private BigDecimal extraPrice;
 
 
-	public MenuSubCategory(MenuTopCategory topCategory, String content, int extraPrice) {
+	public MenuSubCategory(MenuTopCategory topCategory, String content, BigDecimal extraPrice) {
 		this.topCategory = topCategory;
 		this.content = content;
 		this.extraPrice = extraPrice;
