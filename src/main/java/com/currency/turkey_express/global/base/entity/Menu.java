@@ -1,6 +1,7 @@
 package com.currency.turkey_express.global.base.entity;
 
 import com.currency.turkey_express.global.base.enums.memu.MenuStatus;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -50,6 +51,7 @@ public class Menu extends BaseEntity {
 	private String image;
 
 	@OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonManagedReference
 	private List<MenuTopCategory> topCategoris = new ArrayList<>();
 
 
