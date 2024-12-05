@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Table(name = "menu")
 @Getter
@@ -42,6 +43,7 @@ public class Menu extends BaseEntity {
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, length = 50)
+	@Setter
 	private MenuStatus status;         // ENUM: REGISTER, DELETED
 
 	@Column(length = 200)
@@ -51,13 +53,21 @@ public class Menu extends BaseEntity {
 	private List<MenuTopCategory> topCategoris = new ArrayList<>();
 
 
-	public Menu(String name, BigDecimal price, MenuStatus status, String image) {
+	public Menu(Store store, String name, BigDecimal price, MenuStatus status, String image) {
+		this.store = store;
 		this.name = name;
 		this.price = price;
 		this.status = status;
 		this.image = image;
 	}
 
+	// 메뉴 정보 수정
+	public void update(String name, BigDecimal price, MenuStatus status, String image) {
+		this.name = name;
+		this.price = price;
+		this.status = status;
+		this.image = image;
+	}
 }
 
 
