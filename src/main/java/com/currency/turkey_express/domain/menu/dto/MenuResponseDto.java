@@ -1,8 +1,11 @@
 package com.currency.turkey_express.domain.menu.dto;
 
+import lombok.Getter;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+@Getter
 public class MenuResponseDto {
 
     private Long menuId;
@@ -19,12 +22,15 @@ public class MenuResponseDto {
 
     private LocalDateTime modifiedAt;
 
-    public MenuResponseDto(Long menuId, String menuName, BigDecimal menuPrice, String menuStatus, String menuImage) {
+    public MenuResponseDto(Long menuId, String menuName, BigDecimal menuPrice, String menuStatus,
+                           String menuImage, LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.menuId = menuId;
         this.menuName = menuName;
         this.menuPrice = menuPrice;
         this.menuStatus = menuStatus;
         this.menuImage = menuImage;
+        this.createdAt = createdAt;
+        this.modifiedAt = modifiedAt;
     }
 
 }

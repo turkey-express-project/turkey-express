@@ -10,6 +10,8 @@ import com.currency.turkey_express.global.base.entity.MenuSubCategory;
 import com.currency.turkey_express.global.base.entity.MenuTopCategory;
 import com.currency.turkey_express.global.base.entity.User;
 import com.currency.turkey_express.global.base.enums.user.UserType;
+import com.currency.turkey_express.global.exception.BusinessException;
+import com.currency.turkey_express.global.exception.ExceptionType;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -30,14 +32,14 @@ public class MenuOptionService {
     }
 
     // 1. MenuTopCategory 생성
-    public MenuTopCategory createTopCategory(Long menuId, MenuTopCategoryRequestDto menuTopCategoryRequestDto, User user) {
+    public MenuTopCategory createTopCategory(Long menuId, MenuTopCategoryRequestDto menuTopCategoryRequestDto) {
 
-        if (user.getUserType() != UserType.OWNER) {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "사장님 전용 메뉴입니다.");
-            }
+//        if (user.getUserType() != UserType.OWNER) {
+//                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "사장님 전용 메뉴입니다.");
+//            }
 
         Menu menu = menuRepository.findById(menuId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "생성된 메뉴가 없습니다."));
+                .orElseThrow(() -> new BusinessException(ExceptionType.MENU_NOT_FOUND));
 
         MenuTopCategory menuTopCategory = new MenuTopCategory(menu, menuTopCategoryRequestDto.getTitle(), menuTopCategoryRequestDto.getStatus());
 
@@ -47,14 +49,14 @@ public class MenuOptionService {
 
 
     // 2. MenuSubCategory 생성
-    public MenuSubCategory createSubCategory(Long menuTopCategoryId, MenuSubCategoryRequestDto menuSubCategoryRequestDto, User user) {
+    public MenuSubCategory createSubCategory(Long menuTopCategoryId, MenuSubCategoryRequestDto menuSubCategoryRequestDto) {
 
-        if (user.getUserType() != UserType.OWNER) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "사장님 전용 메뉴입니다.");
-        }
+//        if (user.getUserType() != UserType.OWNER) {
+//            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "사장님 전용 메뉴입니다.");
+//        }
 
         MenuTopCategory topCategory = menuTopCategoryRepository.findById(menuTopCategoryId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "상위 카테고리가 존재하지 않습니다."));
+                .orElseThrow(() -> new BusinessException(ExceptionType.MENU_NOT_FOUND));
 
         MenuSubCategory menuSubCategory = new MenuSubCategory(topCategory, menuSubCategoryRequestDto.getContent(), menuSubCategoryRequestDto.getExtraPrice());
 
@@ -66,13 +68,11 @@ public class MenuOptionService {
     // 3. 상위 카테고리 단일 조회
     public MenuTopCategory getTopCategory(Long menuId, Long topCategoryId) {
 
-        Menu menu = menuRepository.findById(menuId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "생성된 메뉴가 없습니다."));
+        menuRepository.findById(menuId)
+                .orElseThrow(() -> new BusinessException(ExceptionType.MENU_NOT_FOUND));
 
-        MenuTopCategory getTopCategory = menuTopCategoryRepository.findById(topCategoryId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "상위 카테고리가 존재하지 않습니다."));
-
-        return getTopCategory;
+        return menuTopCategoryRepository.findById(topCategoryId)
+                .orElseThrow(() -> new BusinessException(ExceptionType.MENU_NOT_FOUND));
 
     }
 
@@ -80,16 +80,14 @@ public class MenuOptionService {
     // 4. 하위 카테고리 단일 조회
     public MenuSubCategory getSubCategory(Long menuId, Long topCategoryId, Long subCategoryId) {
 
-        Menu menu = menuRepository.findById(menuId)
+        menuRepository.findById(menuId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "생성된 메뉴가 없습니다."));
 
-        MenuTopCategory getTopCategory = menuTopCategoryRepository.findById(topCategoryId)
+        menuTopCategoryRepository.findById(topCategoryId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "상위 카테고리가 존재하지 않습니다."));
 
-        MenuSubCategory getSubCategory = menuSubCategoryRepository.findById(subCategoryId)
+        return menuSubCategoryRepository.findById(subCategoryId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "하위 카테고리가 존재하지 않습니다."));
-
-        return getSubCategory;
 
     }
 }

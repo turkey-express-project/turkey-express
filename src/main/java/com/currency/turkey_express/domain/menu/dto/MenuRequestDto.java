@@ -13,10 +13,13 @@ public class MenuRequestDto {
 
     private String menuImage;
 
+    private String menuStatus;
+
+
     public MenuRequestDto(String menuName, BigDecimal menuPrice, String menuImage) {
         this.menuName = menuName;
         this.menuPrice = menuPrice;
         this.menuImage = menuImage;
-    }
 
+    }
 }
