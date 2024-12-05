@@ -22,6 +22,7 @@ public class MenuResponseDto {
 
     private LocalDateTime modifiedAt;
 
+
     public MenuResponseDto(Long menuId, String menuName, BigDecimal menuPrice, String menuStatus,
                            String menuImage, LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.menuId = menuId;
