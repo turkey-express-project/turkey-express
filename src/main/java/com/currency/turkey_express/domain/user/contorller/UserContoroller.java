@@ -1,10 +1,19 @@
 package com.currency.turkey_express.domain.user.contorller;
 
+import com.currency.turkey_express.domain.user.dto.SignUpRequestDto;
+import com.currency.turkey_express.domain.user.dto.UserResponseDto;
 import com.currency.turkey_express.domain.user.service.UserService;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/users")
@@ -12,4 +21,44 @@ public class UserContoroller {
 
 	private final UserService userService;
 
+	//회원가입
+	@PostMapping("/signup")
+	public ResponseEntity<UserResponseDto> signUp(@RequestBody SignUpRequestDto signUpRequestDto)
+		throws IOException {
+
+		//콘솔 로그 확인용
+		log.info("Email: {}", signUpRequestDto.getEmail());
+		log.info("UserNickname: {}", signUpRequestDto.getUserNickname());
+		log.info("Password: {}", signUpRequestDto.getPassword());
+		log.info("UserType: {}", signUpRequestDto.getUserType());
+
+		UserResponseDto userResponseDto = userService.signUp(
+			signUpRequestDto.getEmail(),
+			signUpRequestDto.getUserNickname(),
+			signUpRequestDto.getPassword(),
+			signUpRequestDto.getUserType()
+		);
+
+		return new ResponseEntity<>(userResponseDto, HttpStatus.CREATED);
+	}
+
+	//로그인
+//	@PostMapping("/login")
+//	public ResponseEntity<Void> login(@RequestBody LoginRequestDto loginRequestDto)
+//		throws IOException {
+//
+//		//콘솔 로그 확인용
+//		log.info("Email: {}", loginRequestDto.getEmail());
+//		log.info("Password: {}", loginRequestDto.getPassword());
+//
+//		User user = userService.login(
+//			loginRequestDto.getEmail(),
+//			loginRequestDto.getPassword()
+//		);
+//
+//		//사용자 존재하면 HttpSession 가져오기
+//		HttpSession session = loginRequestDto.getSession();
+//
+//		return new ResponseEntity<>(HttpStatus.OK);
+//	}
 }

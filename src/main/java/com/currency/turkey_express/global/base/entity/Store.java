@@ -65,12 +65,20 @@ public class Store extends BaseEntity {
 		this.orderAmount = orderAmount;
 	}
 
-	public void setStore(StoreRequestDto dto) {
+	public void setStore(StoreRequestDto dto){
 		this.storeName = dto.getStoreName();
 		this.openTime = dto.getOpenTime();
 		this.closeTime = dto.getCloseTime();
 		this.storeStatus = StoreStatus.OPEN;
 		this.category = dto.getCategory();
 		this.orderAmount = dto.getOrderAmount();
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public void setStoreStatusClose() {
+		this.storeStatus = StoreStatus.CLOSE;
 	}
 }
