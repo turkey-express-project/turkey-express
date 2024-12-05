@@ -1,5 +1,6 @@
 package com.currency.turkey_express.domain.user.dto;
 
+import com.currency.turkey_express.global.base.entity.User;
 import com.currency.turkey_express.global.base.enums.user.UserStatus;
 import com.currency.turkey_express.global.base.enums.user.UserType;
 import java.time.LocalDateTime;
@@ -18,4 +19,50 @@ public class UserResponseDto {
 	private Integer totalPoint; //총합 포인트
 	private LocalDateTime createdAt; //유저 생성일
 	private LocalDateTime modifiedAt;//유저 정보 수정일
+
+	public UserResponseDto(Long id, String email, String userNickname, String password,
+		UserType userType, UserStatus userStatus, LocalDateTime leavedAt, Integer totalPoint,
+		LocalDateTime createdAt, LocalDateTime modifiedAt) {
+
+		this.id = id;
+		this.email = email;
+		this.userNickname = userNickname;
+		this.password = password;
+		this.userType = userType;
+		this.userStatus = userStatus;
+		this.leavedAt = leavedAt;
+		this.totalPoint = totalPoint;
+		this.createdAt = createdAt;
+		this.modifiedAt = modifiedAt;
+	}
+
+	public UserResponseDto(Long id, String email, String userNickname, String password,
+		UserType userType, UserStatus userStatus, Integer totalPoint, LocalDateTime createdAt,
+		LocalDateTime modifiedAt) {
+		this.id = id;
+		this.email = email;
+		this.userNickname = userNickname;
+		this.password = password;
+		this.userType = userType;
+		this.userStatus = userStatus;
+		this.totalPoint = 0;
+		this.createdAt = createdAt;
+		this.modifiedAt = modifiedAt;
+	}
+
+	//회원가입
+	public static UserResponseDto toDto(User user) {
+		return new UserResponseDto(
+			user.getId(),
+			user.getEmail(),
+			user.getUserNickname(),
+			user.getPassword(),
+			user.getUserType(),
+			user.getUserStatus(),
+			user.getTotalPoint(),
+			user.getCreatedAt(),
+			user.getModifiedAt()
+		);
+
+	}
 }
