@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import lombok.Getter;
 
 @Table(name = "point")
@@ -26,6 +27,6 @@ public class Point extends BaseEntity {
 	private User user; //사용자 id(외래키)
 
 	@Column(nullable = false)
-	private Integer point; //적립금액
+	private BigDecimal point; //적립금액
 
 }

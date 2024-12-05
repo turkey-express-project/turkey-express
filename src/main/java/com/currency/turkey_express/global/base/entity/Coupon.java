@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import lombok.Getter;
 
 @Table(name = "coupon")
@@ -24,6 +25,6 @@ public class Coupon extends BaseEntity {
 	private Integer discountValue; //쿠폰 할인률
 
 	@Column(nullable = false)
-	private Integer maxDiscount; //쿠폰 최대 할인금액
+	private BigDecimal maxDiscount; //쿠폰 최대 할인금액
 
 }
