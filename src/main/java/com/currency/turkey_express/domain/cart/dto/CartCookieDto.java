@@ -5,7 +5,6 @@ import com.currency.turkey_express.global.base.entity.Menu;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,34 +18,6 @@ public class CartCookieDto {
 
 	private List<MenuDetail> menuList = new ArrayList<>();
 
-	@Getter
-	@AllArgsConstructor
-	static class MenuDetail {
-
-		private Integer id;
-
-		private String menuName;
-
-		private Integer selectedCount;
-
-		private BigDecimal price;
-
-		private List<MenuOption> options = new ArrayList<>();
-
-	}
-
-	@Getter
-	@AllArgsConstructor
-	static class MenuOption {
-
-		private String topCategoryName;
-
-		private String subCategoryName;
-
-		private BigDecimal optionPrice;
-
-	}
-
 
 	public void addMenu(Menu menu, List<MenuOptionSet> menuOptionSets, int count) {
 
@@ -55,9 +26,9 @@ public class CartCookieDto {
 			storeId = menu.getStore().getId();
 		}
 
-		List<MenuOption> menuOption = menuOptionSets.stream()
+		List<MenuOptionDetail> menuOptionDetail = menuOptionSets.stream()
 			.map(optionSet -> {
-				return new MenuOption(
+				return new MenuOptionDetail(
 					optionSet.getTopCategory().getTitle(),
 					optionSet.getSubCategory().getContent(),
 					optionSet.getSubCategory().getExtraPrice()
@@ -70,7 +41,7 @@ public class CartCookieDto {
 				menu.getName(),
 				count,
 				menu.getPrice(),
-				menuOption
+				menuOptionDetail
 			)
 		);
 
