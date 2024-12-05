@@ -10,12 +10,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.Getter;
 
 @Table(name = "user")
 @Getter
 @Entity
+//@DynamicInsert
 public class User extends BaseEntity {
 
 	@Id
@@ -42,6 +44,18 @@ public class User extends BaseEntity {
 	private LocalDateTime leavedAt; //탈퇴일
 
 	@Column(nullable = false)
-	private Integer totalPoint; //총합 포인트
+	private BigDecimal totalPoint = new BigDecimal(0); //총합 포인트
+
+	public User(String email, String userNickname, String password, UserType userType,
+		UserStatus userStatus) {
+		this.email = email;
+		this.userNickname = userNickname;
+		this.password = password;
+		this.userType = userType;
+		this.userStatus = userStatus;
+	}
+
+	public User() {
+	}
 
 }
