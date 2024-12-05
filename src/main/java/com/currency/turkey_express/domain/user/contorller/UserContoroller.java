@@ -1,11 +1,8 @@
 package com.currency.turkey_express.domain.user.contorller;
 
-import com.currency.turkey_express.domain.user.dto.LoginRequestDto;
 import com.currency.turkey_express.domain.user.dto.SignUpRequestDto;
 import com.currency.turkey_express.domain.user.dto.UserResponseDto;
 import com.currency.turkey_express.domain.user.service.UserService;
-import com.currency.turkey_express.global.base.entity.User;
-import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,22 +43,22 @@ public class UserContoroller {
 	}
 
 	//로그인
-	@PostMapping("/login")
-	public ResponseEntity<Void> login(@RequestBody LoginRequestDto loginRequestDto)
-		throws IOException {
-
-		//콘솔 로그 확인용
-		log.info("Email: {}", loginRequestDto.getEmail());
-		log.info("Password: {}", loginRequestDto.getPassword());
-
-		User user = userService.login(
-			loginRequestDto.getEmail(),
-			loginRequestDto.getPassword()
-		);
-
-		//사용자 존재하면 HttpSession 가져오기
-		HttpSession session = loginRequestDto.getSession();
-
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
+//	@PostMapping("/login")
+//	public ResponseEntity<Void> login(@RequestBody LoginRequestDto loginRequestDto)
+//		throws IOException {
+//
+//		//콘솔 로그 확인용
+//		log.info("Email: {}", loginRequestDto.getEmail());
+//		log.info("Password: {}", loginRequestDto.getPassword());
+//
+//		User user = userService.login(
+//			loginRequestDto.getEmail(),
+//			loginRequestDto.getPassword()
+//		);
+//
+//		//사용자 존재하면 HttpSession 가져오기
+//		HttpSession session = loginRequestDto.getSession();
+//
+//		return new ResponseEntity<>(HttpStatus.OK);
+//	}
 }

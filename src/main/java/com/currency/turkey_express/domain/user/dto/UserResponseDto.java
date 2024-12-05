@@ -3,6 +3,7 @@ package com.currency.turkey_express.domain.user.dto;
 import com.currency.turkey_express.global.base.entity.User;
 import com.currency.turkey_express.global.base.enums.user.UserStatus;
 import com.currency.turkey_express.global.base.enums.user.UserType;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.Getter;
 
@@ -16,12 +17,12 @@ public class UserResponseDto {
 	private UserType userType; //유저 타입
 	private UserStatus userStatus; //유저 상태
 	private LocalDateTime leavedAt; //탈퇴일
-	private Integer totalPoint; //총합 포인트
+	private BigDecimal totalPoint; //총합 포인트
 	private LocalDateTime createdAt; //유저 생성일
 	private LocalDateTime modifiedAt;//유저 정보 수정일
 
 	public UserResponseDto(Long id, String email, String userNickname, String password,
-		UserType userType, UserStatus userStatus, LocalDateTime leavedAt, Integer totalPoint,
+		UserType userType, UserStatus userStatus, LocalDateTime leavedAt, BigDecimal totalPoint,
 		LocalDateTime createdAt, LocalDateTime modifiedAt) {
 
 		this.id = id;
@@ -37,7 +38,7 @@ public class UserResponseDto {
 	}
 
 	public UserResponseDto(Long id, String email, String userNickname, String password,
-		UserType userType, UserStatus userStatus, Integer totalPoint, LocalDateTime createdAt,
+		UserType userType, UserStatus userStatus, BigDecimal totalPoint, LocalDateTime createdAt,
 		LocalDateTime modifiedAt) {
 		this.id = id;
 		this.email = email;
@@ -45,7 +46,7 @@ public class UserResponseDto {
 		this.password = password;
 		this.userType = userType;
 		this.userStatus = userStatus;
-		this.totalPoint = 0;
+		this.totalPoint = totalPoint;
 		this.createdAt = createdAt;
 		this.modifiedAt = modifiedAt;
 	}
