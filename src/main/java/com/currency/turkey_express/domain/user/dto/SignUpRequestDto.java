@@ -8,14 +8,21 @@ import lombok.Getter;
 public class SignUpRequestDto {
 
 	@NotBlank
-	private String email; //이메일
+	private final String email; //이메일
 
 	@NotBlank
-	private String userNickname; //닉네임
+	private final String userNickname; //닉네임
 
 	@NotBlank
-	private String password; //비밀번호
+	private final String password; //비밀번호
 
 	@NotBlank
-	private UserType userType; //유저 타입
+	private final UserType userType; //유저 타입
+
+	public SignUpRequestDto(String email, String userNickname, String password, UserType userType) {
+		this.email = email;
+		this.userNickname = userNickname;
+		this.password = password;
+		this.userType = userType;
+	}
 }
