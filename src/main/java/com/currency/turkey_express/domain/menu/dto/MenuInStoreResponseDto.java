@@ -5,18 +5,18 @@ import java.math.BigDecimal;
 import lombok.Getter;
 
 @Getter
-public class MenuInStoreResponsDto {
+public class MenuInStoreResponseDto {
 	private Long menuId;
 	private String menuName;
 	private BigDecimal menuPrice;
 
-	public MenuInStoreResponsDto() {}
-	public MenuInStoreResponsDto(Long menuId, String menuName, BigDecimal menuPrice) {
+	public MenuInStoreResponseDto() {}
+	public MenuInStoreResponseDto(Long menuId, String menuName, BigDecimal menuPrice) {
 		this.menuId = menuId;
 		this.menuName = menuName;
 		this.menuPrice = menuPrice;
 	}
-	public MenuInStoreResponsDto(Menu menu) {
+	public MenuInStoreResponseDto(Menu menu) {
 		this.menuId = menu.getId();
 		this.menuName = menu.getName();
 		this.menuPrice = menu.getPrice();
