@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,12 +26,14 @@ public class StoreController {
 
 	private final StoreService storeService;
 
+	//가게 생성
 	@PostMapping
 	public ResponseEntity<StoreResponseDto> createStore(@RequestBody StoreRequestDto dto){
 		StoreResponseDto storeResponseDto = storeService.createStore(dto);
 		return new ResponseEntity<>(storeResponseDto, HttpStatus.CREATED);
 	}
 
+	//가게 수정
 	@PatchMapping("/{store_id}")
 	public ResponseEntity<StoreResponseDto> updateStore(@PathVariable Long store_id, @RequestBody StoreRequestDto dto) {
 		StoreResponseDto storeResponseDto = storeService.updateStore(store_id, dto);
@@ -46,9 +49,17 @@ public class StoreController {
 //		return new ResponseEntity<>(storeList, HttpStatus.OK);
 //	}
 
+	//가게 단건 조회
 	@GetMapping("/{store_id}")
 	public ResponseEntity<StoreMenuResponseDto> getStore(@PathVariable Long store_id) {
 		StoreMenuResponseDto storeMenuResponseDto = storeService.findByStoreIdInMenus(store_id);
 		return new ResponseEntity<StoreMenuResponseDto>(storeMenuResponseDto, HttpStatus.OK);
+	}
+
+	//가게 상태 폐업으로 변경
+	@DeleteMapping("/{store_id}")
+	public ResponseEntity<StoreResponseDto> closeStore(@PathVariable Long store_id) {
+		StoreResponseDto storeResponseDto = storeService.setCloseStore(store_id);
+		return new ResponseEntity<>(storeResponseDto, HttpStatus.OK);
 	}
 }

@@ -1,7 +1,7 @@
 package com.currency.turkey_express.domain.store.service;
 
 import com.currency.turkey_express.domain.favorite.repository.FavoriteRepository;
-import com.currency.turkey_express.domain.menu.dto.MenuInStoreResponsDto;
+import com.currency.turkey_express.domain.menu.dto.MenuInStoreResponseDto;
 import com.currency.turkey_express.domain.menu.repository.MenuRepository;
 import com.currency.turkey_express.domain.store.dto.StoreMenuResponseDto;
 import com.currency.turkey_express.domain.store.dto.StoreRequestDto;
@@ -81,12 +81,26 @@ public class StoreService {
 		//favoriteRepository 에서 즐겨찾기 개수를 가져옴
 		Long favoriteCount = favoriteRepository.countByStoreId(storeId);
 		//menuRepository 가게에 존재하는 메뉴 리스트를 가져옴
-		List<MenuInStoreResponsDto> menuInStoreResponsDtoList = menuRepository.findAllByStoreId(storeId);
+		List<MenuInStoreResponseDto> menuInStoreResponsDtoList = menuRepository.findAllByStoreId(storeId);
 
 		//위의 정보를 통해 반환 dto 생성
 		return new StoreMenuResponseDto(store, favoriteCount, menuInStoreResponsDtoList);
 	}
 
+	//가게 폐업으로 상태 변경
+	@Transactional
+	public StoreResponseDto setCloseStore(Long storeId) {
+		Store store = storeRepository.findById(storeId).orElseThrow(
+			()->new RuntimeException("Store Not Found")
+		);
+		//가게의 상태를 close로 변경
+		store.setStoreStatusClose();
+		//repository에 저장
+		storeRepository.save(store);
+
+		//수정된 정보를 통해 반환 dto 생성
+		return new StoreResponseDto(store);
+	}
 
 	//한 계정당 생성 가능한 가게의 수를 확인
 	private void isFullStores(User user){
@@ -96,4 +110,6 @@ public class StoreService {
 			throw new RuntimeException("한 계정 당 3개의 가게까지 생성할 수 있습니다.");
 		}
 	}
+
+
 }

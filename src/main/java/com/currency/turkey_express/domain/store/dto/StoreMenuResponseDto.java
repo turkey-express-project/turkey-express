@@ -1,6 +1,6 @@
 package com.currency.turkey_express.domain.store.dto;
 
-import com.currency.turkey_express.domain.menu.dto.MenuInStoreResponsDto;
+import com.currency.turkey_express.domain.menu.dto.MenuInStoreResponseDto;
 import com.currency.turkey_express.global.base.entity.Store;
 import com.currency.turkey_express.global.base.enums.store.Category;
 import java.math.BigDecimal;
@@ -16,9 +16,9 @@ public class StoreMenuResponseDto {
 	private BigDecimal orderAmount;
 	private Category category;
 	private Long favoriteCounts;
-	private List<MenuInStoreResponsDto> menus;
+	private List<MenuInStoreResponseDto> menus;
 
-	public StoreMenuResponseDto(Store store, Long favoriteCounts, List<MenuInStoreResponsDto> menus) {
+	public StoreMenuResponseDto(Store store, Long favoriteCounts, List<MenuInStoreResponseDto> menus) {
 		this.storeName = store.getStoreName();
 		this.openTime = store.getOpenTime();
 		this.closeTime = store.getCloseTime();
