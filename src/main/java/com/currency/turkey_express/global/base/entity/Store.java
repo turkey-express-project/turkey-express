@@ -49,7 +49,6 @@ public class Store extends BaseEntity {
 	@Column(nullable = false)
 	private BigDecimal orderAmount;
 
-	@Setter
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
