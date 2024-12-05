@@ -1,7 +1,9 @@
 package com.currency.turkey_express.domain.menu.service;
 
 import com.currency.turkey_express.domain.menu.dto.MenuSubCategoryRequestDto;
+import com.currency.turkey_express.domain.menu.dto.MenuSubCategoryResponseDto;
 import com.currency.turkey_express.domain.menu.dto.MenuTopCategoryRequestDto;
+import com.currency.turkey_express.domain.menu.dto.MenuTopCategoryResponseDto;
 import com.currency.turkey_express.domain.menu.repository.MenuRepository;
 import com.currency.turkey_express.domain.menu.repository.MenuSubCategoryRepository;
 import com.currency.turkey_express.domain.menu.repository.MenuTopCategoryRepository;
@@ -12,9 +14,7 @@ import com.currency.turkey_express.global.base.entity.User;
 import com.currency.turkey_express.global.base.enums.user.UserType;
 import com.currency.turkey_express.global.exception.BusinessException;
 import com.currency.turkey_express.global.exception.ExceptionType;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class MenuOptionService {
@@ -31,63 +31,89 @@ public class MenuOptionService {
         this.menuSubCategoryRepository = menuSubCategoryRepository;
     }
 
-    // 1. MenuTopCategory 생성
-    public MenuTopCategory createTopCategory(Long menuId, MenuTopCategoryRequestDto menuTopCategoryRequestDto) {
-
-//        if (user.getUserType() != UserType.OWNER) {
-//                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "사장님 전용 메뉴입니다.");
-//            }
+    /**
+     * 상위 카테고리 생성
+     * - 메뉴가 존재하는지 확인
+     * - 사장님인지 확인
+     * - 예외 처리:
+     *   1. 메뉴가 없는 경우
+     *   2. 사장님이 아닌 경우
+     */
+    public MenuTopCategoryResponseDto createTopCategory(Long menuId, MenuTopCategoryRequestDto menuTopCategoryRequestDto, User user) {
+        if (user.getUserType() != UserType.OWNER) {
+                throw new BusinessException(ExceptionType.UNAUTHORIZED_ACCESS);
+            }
 
         Menu menu = menuRepository.findById(menuId)
                 .orElseThrow(() -> new BusinessException(ExceptionType.MENU_NOT_FOUND));
 
         MenuTopCategory menuTopCategory = new MenuTopCategory(menu, menuTopCategoryRequestDto.getTitle(), menuTopCategoryRequestDto.getStatus());
 
-        return menuTopCategoryRepository.save(menuTopCategory);
+        menuTopCategoryRepository.save(menuTopCategory);
+
+        return new MenuTopCategoryResponseDto(menuTopCategory.getId(), menuTopCategory.getTitle(), menuTopCategory.getNecessary());
 
     }
 
 
-    // 2. MenuSubCategory 생성
-    public MenuSubCategory createSubCategory(Long menuTopCategoryId, MenuSubCategoryRequestDto menuSubCategoryRequestDto) {
-
-//        if (user.getUserType() != UserType.OWNER) {
-//            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "사장님 전용 메뉴입니다.");
-//        }
+    /**
+     * 하위 카테고리 생성
+     * - 상위 카테고리가 존재하는지 확인
+     * - 사장님인지 확인
+     * - 예외 처리:
+     *   1. 상위 카테고리가 없는 경우
+     *   2. 사장님이 아닌 경우
+     */
+    public MenuSubCategoryResponseDto createSubCategory(Long menuTopCategoryId, MenuSubCategoryRequestDto menuSubCategoryRequestDto, User user) {
+        if (user.getUserType() != UserType.OWNER) {
+            throw new BusinessException(ExceptionType.UNAUTHORIZED_ACCESS);
+        }
 
         MenuTopCategory topCategory = menuTopCategoryRepository.findById(menuTopCategoryId)
                 .orElseThrow(() -> new BusinessException(ExceptionType.MENU_NOT_FOUND));
 
         MenuSubCategory menuSubCategory = new MenuSubCategory(topCategory, menuSubCategoryRequestDto.getContent(), menuSubCategoryRequestDto.getExtraPrice());
 
-        return menuSubCategoryRepository.save(menuSubCategory);
+        menuSubCategoryRepository.save(menuSubCategory);
+
+        return new MenuSubCategoryResponseDto(menuSubCategory.getId(),menuSubCategory.getContent(),menuSubCategory.getExtraPrice());
 
     }
 
 
-    // 3. 상위 카테고리 단일 조회
-    public MenuTopCategory getTopCategory(Long menuId, Long topCategoryId) {
+    /**
+     * 상위 카테고리 조회
+     * - 메뉴와 카테고리가 존재하는지 확인
+     */
+    public MenuTopCategoryResponseDto getTopCategory(Long menuId, Long topCategoryId) {
 
         menuRepository.findById(menuId)
                 .orElseThrow(() -> new BusinessException(ExceptionType.MENU_NOT_FOUND));
 
-        return menuTopCategoryRepository.findById(topCategoryId)
-                .orElseThrow(() -> new BusinessException(ExceptionType.MENU_NOT_FOUND));
+        MenuTopCategory MenuTopCategory = menuTopCategoryRepository.findById(topCategoryId)
+                .orElseThrow(() -> new BusinessException(ExceptionType.TOP_CATEGORY_NOT_FOUND));
+
+        return new MenuTopCategoryResponseDto(MenuTopCategory.getId(), MenuTopCategory.getTitle(), MenuTopCategory.getNecessary());
 
     }
 
 
-    // 4. 하위 카테고리 단일 조회
-    public MenuSubCategory getSubCategory(Long menuId, Long topCategoryId, Long subCategoryId) {
+    /**
+     * 하위 카테고리 조회
+     * - 메뉴, 상위 카테고리, 하위 카테고리가 존재하는지 확인
+     */
+    public MenuSubCategoryResponseDto getSubCategory(Long menuId, Long topCategoryId, Long subCategoryId) {
 
         menuRepository.findById(menuId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "생성된 메뉴가 없습니다."));
+                .orElseThrow(() -> new BusinessException(ExceptionType.MENU_NOT_FOUND));
 
         menuTopCategoryRepository.findById(topCategoryId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "상위 카테고리가 존재하지 않습니다."));
+                .orElseThrow(() -> new BusinessException(ExceptionType.TOP_CATEGORY_NOT_FOUND));
 
-        return menuSubCategoryRepository.findById(subCategoryId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "하위 카테고리가 존재하지 않습니다."));
+        MenuSubCategory menuSubCategory = menuSubCategoryRepository.findById(subCategoryId)
+                .orElseThrow(() -> new BusinessException(ExceptionType.SUB_CATEGORY_NOT_FOUND));
+
+        return new MenuSubCategoryResponseDto(menuSubCategory.getId(), menuSubCategory.getContent(), menuSubCategory.getExtraPrice());
 
     }
 }
