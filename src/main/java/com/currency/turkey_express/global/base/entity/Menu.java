@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -37,7 +38,7 @@ public class Menu extends BaseEntity {
 	private String name;
 
 	@Column(nullable = false)
-	private int price;
+	private BigDecimal price;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, length = 50)
@@ -50,7 +51,7 @@ public class Menu extends BaseEntity {
 	private List<MenuTopCategory> topCategoris = new ArrayList<>();
 
 
-	public Menu(String name, int price, MenuStatus status, String image) {
+	public Menu(String name, BigDecimal price, MenuStatus status, String image) {
 		this.name = name;
 		this.price = price;
 		this.status = status;
