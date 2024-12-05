@@ -62,6 +62,7 @@ public class StoreService {
 	}
 
 
+	//
 	public List<StoreResponseDto> findByFilters(String name, Category category, Long minReviews, Double minRating) {
 		List<StoreResponseDto> storeList;
 		if(name != null || category != null || minReviews != null || minRating != null){

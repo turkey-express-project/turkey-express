@@ -70,7 +70,7 @@ public class UserContoroller {
 		);
 
 		//사용자 session 존재하면 가져오기 세션 없으면 null 반환
-		HttpSession session = httpServletRequest.getSession(false);
+		HttpSession session = httpServletRequest.getSession(true );
 
 		//중복 로그인 방지
 		//session 로그인된 사용자 정보 가져옴
