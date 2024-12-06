@@ -55,5 +55,4 @@ public class CouponListController {
 	 * 쿠폰 목록(유저별) API
 	 * 쿠폰 리스트 테이블 목록 조회
 	 */
-
 }
