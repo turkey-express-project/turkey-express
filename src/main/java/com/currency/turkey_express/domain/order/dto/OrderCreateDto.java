@@ -57,7 +57,7 @@ public class OrderCreateDto {
 
 		// 쿠폰 및 포인트 할인 정보는 장바구니에 담긴 메뉴 중 첫번째에 전부 적용
 		menuList.get(0).setPointValue(orderRequestDto.getPointPrice());
-		menuList.get(0).setPointValue(couponDiscountValue);
+		menuList.get(0).setCouponDiscountValue(couponDiscountValue);
 	}
 
 
