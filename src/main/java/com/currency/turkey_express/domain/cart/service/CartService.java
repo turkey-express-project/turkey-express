@@ -7,6 +7,7 @@ import com.currency.turkey_express.domain.cart.repository.MenuSubCategoryReposit
 import com.currency.turkey_express.domain.cart.repository.MenuTopCategoryRepository;
 import com.currency.turkey_express.domain.menu.repository.MenuRepository;
 import com.currency.turkey_express.global.base.entity.Menu;
+import com.currency.turkey_express.global.base.enums.store.StoreStatus;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,10 @@ public class CartService {
 	) {
 		Menu menu = menuRepository.findById(cartRequestDto.getMenuId())
 			.orElseThrow(() -> new RuntimeException("존재하지 않는 메뉴 입니다."));
+
+		if (menu.getStore().getStoreStatus().equals(StoreStatus.CLOSE)) {
+			throw new RuntimeException("폐점한 가게 메뉴입니다");
+		}
 
 		List<MenuOptionSet> menuOptionSets =
 			cartRequestDto.getMenuOptions().stream()
