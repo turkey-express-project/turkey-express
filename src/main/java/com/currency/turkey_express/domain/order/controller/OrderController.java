@@ -2,6 +2,7 @@ package com.currency.turkey_express.domain.order.controller;
 
 import com.currency.turkey_express.domain.cart.dto.CartCookieDto;
 import com.currency.turkey_express.domain.coupon.dto.CouponResponseDto;
+import com.currency.turkey_express.domain.order.dto.CancleRequestDto;
 import com.currency.turkey_express.domain.order.dto.OrderCreateDto;
 import com.currency.turkey_express.domain.order.dto.OrderRequestDto;
 import com.currency.turkey_express.domain.order.service.OrderService;
@@ -132,6 +133,19 @@ public class OrderController {
 		orderService.processNext(orderId, userId);
 
 		return new ResponseEntity<>(new MessageDto("다음 주문상태로 넘어갑니다"), HttpStatus.OK);
+	}
+
+	@LoginRequired
+	@PostMapping("/{orderId}")
+	public ResponseEntity<MessageDto> cancleOrder(
+		@SessionAttribute(name = Const.LOGIN_USER) Long userId,
+		@PathVariable Long orderId,
+		@RequestBody CancleRequestDto cancleRequestDto
+	) {
+		//주문 접근해서 취소 상태로 변경
+		orderService.cancleOrder(orderId, userId, cancleRequestDto);
+
+		return new ResponseEntity<>(new MessageDto("주문이 취소되었습니다."), HttpStatus.OK);
 	}
 
 	private CartCookieDto getCartCookieDto(String encodedCartValue) {

@@ -3,6 +3,7 @@ package com.currency.turkey_express.domain.order.service;
 import com.currency.turkey_express.domain.coupon.dto.CouponResponseDto;
 import com.currency.turkey_express.domain.coupon.repository.CouponListRepository;
 import com.currency.turkey_express.domain.coupon.repository.CouponRepository;
+import com.currency.turkey_express.domain.order.dto.CancleRequestDto;
 import com.currency.turkey_express.domain.order.dto.OrderCreateDto;
 import com.currency.turkey_express.domain.order.repository.OrderMenuOptionRepository;
 import com.currency.turkey_express.domain.order.repository.OrderRepository;
@@ -154,6 +155,10 @@ public class OrderService {
 		Order order = orderRepository.findById(orderId)
 			.orElseThrow(() -> new RuntimeException("존재하지 않는 주문입니다"));
 
+		if (!order.getStore().getUser().getId().equals(userId)) {
+			throw new BusinessException(ExceptionType.UNAUTHORIZED);
+		}
+
 		if (order.getOrderStatus().equals(OrderStatus.ORDER_REJECTED)) {
 			throw new RuntimeException("거절된 주문을 진행할 수 없습니다");
 		}
@@ -169,5 +174,33 @@ public class OrderService {
 
 		order.setOrderStatus(orderStatuses[nextOrderIdx]);
 
+	}
+
+	public void cancleOrder(Long orderId, Long userId, CancleRequestDto cancleRequestDto) {
+
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new BusinessException(ExceptionType.USER_NOT_FOUND));
+
+		if (!user.getUserType().equals(UserType.OWNER)) {
+			throw new BusinessException(ExceptionType.UNAUTHORIZED);
+		}
+
+		Order order = orderRepository.findById(orderId)
+			.orElseThrow(() -> new RuntimeException("존재하지 않는 주문입니다"));
+
+		if (!order.getStore().getUser().getId().equals(userId)) {
+			throw new BusinessException(ExceptionType.UNAUTHORIZED);
+		}
+
+		if (order.getOrderStatus().equals(OrderStatus.ORDER_REJECTED)) {
+			throw new RuntimeException("이미 거절된 주문입니다");
+		}
+
+		if (!order.getOrderStatus().equals(OrderStatus.ORDER_COMPLETE)) {
+			throw new RuntimeException("진행되는 주문을 거절할 수 없습니다");
+		}
+
+		order.setCancleComment(cancleRequestDto.getComment());
+		order.setOrderStatus(OrderStatus.ORDER_REJECTED);
 	}
 }
