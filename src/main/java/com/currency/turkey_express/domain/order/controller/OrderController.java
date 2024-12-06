@@ -5,7 +5,9 @@ import com.currency.turkey_express.domain.coupon.dto.CouponResponseDto;
 import com.currency.turkey_express.domain.order.dto.OrderCreateDto;
 import com.currency.turkey_express.domain.order.dto.OrderRequestDto;
 import com.currency.turkey_express.domain.order.service.OrderService;
+import com.currency.turkey_express.domain.user.service.UserService;
 import com.currency.turkey_express.global.annotation.LoginRequired;
+import com.currency.turkey_express.global.base.dto.MessageDto;
 import com.currency.turkey_express.global.constant.Const;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,7 +16,11 @@ import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +35,8 @@ public class OrderController {
 	private final ObjectMapper objectMapper;
 
 	private final OrderService orderService;
+
+	private final UserService userService;
 
 	/**
 	 * 장바구니 쿠키를 받아와서 주문을 생성하는 API
@@ -110,6 +118,19 @@ public class OrderController {
 			);
 		}
 
+	}
+
+
+	@LoginRequired
+	@PatchMapping("/{orderId}")
+	public ResponseEntity<MessageDto> processOrder(
+		@SessionAttribute(name = Const.LOGIN_USER) Long userId,
+		@PathVariable Long orderId
+	) {
+		//주문 접근해서 다음 상태로 변경
+		orderService.processNext(orderId, userId);
+
+		return new ResponseEntity<>(new MessageDto("다음 주문상태로 넘어갑니다"), HttpStatus.OK);
 	}
 
 	private CartCookieDto getCartCookieDto(String encodedCartValue) {
