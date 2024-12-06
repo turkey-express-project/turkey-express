@@ -23,7 +23,14 @@ public class FavoriteService {
 	private final StoreRepository storeRepository;
 	private final UserRepository userRepository;
 
-	//즐겨찾기 추가
+	/*
+	 * 즐겨찾기 추가 api
+	 * - 트랜잭션
+	 * - 예외처리 :
+	 *   1. 유저 존재, 유저 탈퇴 여부 확인
+	 *   2. 가게 존재, 가게 폐업 여부 확인
+	 *   3. 즐겨찾기 한 유저가 가게 오너 유저와 같은지 확인
+	 */
 	@Transactional
 	public MessageDto createFavorite(Long storeId, Long userId) {
 		Store store = findStoreOrElseThrow(storeId);
@@ -40,7 +47,14 @@ public class FavoriteService {
 		return new MessageDto("즐겨찾기에 추가되었습니다.");
 	}
 
-	//즐겨찾기 삭제
+	/*
+	 * 즐겨찾기 삭제 api
+	 * - 트랜잭션
+	 * - 예외처리 :
+	 *   1. 유저 존재, 유저 탈퇴 여부 확인
+	 *   2. 가게 존재, 가게 폐업 여부 확인
+	 *   3. 즐겨찾기 존재 여부 확인
+	 */
 	@Transactional
 	public MessageDto deleteFavorite(Long storeId, Long userId) {
 		Store store = findStoreOrElseThrow(storeId);
@@ -48,17 +62,32 @@ public class FavoriteService {
 
 		//Favorite 조회 및 삭제
 		Favorite favorite = favoriteRepository.findByStoreIdAndUserId(storeId,userId);
+
+		if(favorite == null){
+			throw new BusinessException(ExceptionType.FAVORITE_NOT_FOUND);
+		}
+
 		favoriteRepository.delete(favorite);
 		return new MessageDto("즐겨찾기에서 삭제되었습니다.");
 	}
 
-	//즐겨찾기 로그인 세션 기준으로 조회
+	/*
+	 * 즐겨찾기 조회 api
+	 * - 트랜잭션
+	 * - 예외처리 :
+	 *   1. 즐겨찾기 존재 여부 확인
+	 */
 	public List<FavoriteResponseDto> findByUserId(Long userId) {
 		List<FavoriteResponseDto> favoriteResponseDtoList = favoriteRepository.findAllByUserId(userId);
+		if (favoriteResponseDtoList.isEmpty()) {
+			throw new BusinessException(ExceptionType.FAVORITE_NOT_FOUND);
+		}
 		return favoriteResponseDtoList;
 	}
 
-	//중복되는 예외처리 코드 메서드로 분리
+	/********************중복되는 예외처리 코드 메서드로 분리*****************************/
+
+
 	private User findUserOrElseThrow(Long userId) {
 		//유저 관련 예외처리 (유저가 존재하지 않을 시, 또는 유저가 탈퇴 상태일 시)
 		User user = userRepository.findById(userId).orElseThrow(
