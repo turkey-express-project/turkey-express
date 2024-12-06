@@ -11,10 +11,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Table(name = "point")
 @Getter
 @Entity
+@NoArgsConstructor
 public class Point extends BaseEntity {
 
 	@Id
@@ -29,4 +31,8 @@ public class Point extends BaseEntity {
 	@Column(nullable = false)
 	private BigDecimal point; //적립금액
 
+	public Point(User user, BigDecimal point) {
+		this.user = user;
+		this.point = point;
+	}
 }
