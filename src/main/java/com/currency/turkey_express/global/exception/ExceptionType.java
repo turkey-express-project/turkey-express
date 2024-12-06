@@ -22,7 +22,8 @@ public enum ExceptionType {
 	INVALID_MENU_DATA(HttpStatus.BAD_REQUEST, "메뉴 데이터가 잘못되었습니다."),
 	TOP_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "상위 카테고리를 찾을 수 없습니다."),
 	SUB_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "하위 카테고리를 찾을 수 없습니다."),
-	ALREADY_FULL_STORE(HttpStatus.BAD_REQUEST,"한 계정당 최대 3개의 가게를 운영할 수 있습니다.");
+	ALREADY_FULL_STORE(HttpStatus.BAD_REQUEST,"한 계정당 최대 3개의 가게를 운영할 수 있습니다."),
+	FAVORITE_NOT_FOUND(HttpStatus.NOT_FOUND,"즐겨찾기가 존재하지 않습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String errorMessage;
