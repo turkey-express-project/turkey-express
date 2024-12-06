@@ -1,4 +1,4 @@
-package com.currency.turkey_express.domain.order.repository;
+package com.currency.turkey_express.domain.coupon.repository;
 
 import com.currency.turkey_express.global.base.entity.CouponList;
 import java.util.Optional;

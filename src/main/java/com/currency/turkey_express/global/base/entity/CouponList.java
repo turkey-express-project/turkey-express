@@ -12,10 +12,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Table(name = "coupon_list")
 @Getter
 @Entity
+@NoArgsConstructor
 public class CouponList {
 
 	@Id
