@@ -13,11 +13,12 @@ import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Table(name = "user")
 @Getter
 @Entity
-//@DynamicInsert
+@NoArgsConstructor
 public class User extends BaseEntity {
 
 	@Id
@@ -53,9 +54,6 @@ public class User extends BaseEntity {
 		this.password = password;
 		this.userType = userType;
 		this.userStatus = userStatus;
-	}
-
-	public User() {
 	}
 
 	//유저 상태 변경
