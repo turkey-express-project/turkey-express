@@ -3,20 +3,26 @@ package com.currency.turkey_express.domain.cart.controller;
 import com.currency.turkey_express.domain.cart.dto.CartCookieDto;
 import com.currency.turkey_express.domain.cart.dto.CartMenuResponseDto;
 import com.currency.turkey_express.domain.cart.dto.CartRequestDto;
+import com.currency.turkey_express.domain.cart.exception.NoExistException;
 import com.currency.turkey_express.domain.cart.service.CartService;
 import com.currency.turkey_express.global.annotation.LoginRequired;
 import com.currency.turkey_express.global.base.dto.MessageDto;
+import com.currency.turkey_express.global.exception.BusinessException;
+import com.currency.turkey_express.global.exception.ExceptionResponse;
+import com.currency.turkey_express.global.exception.ExceptionType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,80 +39,32 @@ public class CartController {
 
 	private final CartService cartService;
 
-
 	/**
 	 * 카트에 메뉴 담기 API
 	 *
-	 * @param request
+	 * @param cartCookieDto
 	 * @param response
 	 * @param cartRequestDto
 	 * @return
 	 */
+	// TODO 로그인 추가
 	@LoginRequired
 	@PostMapping("")
 	public ResponseEntity<MessageDto> addMenu(
-		HttpServletRequest request,
+		@CookieValue(value = "CART", required = false) CartCookieDto cartCookieDto,
 		HttpServletResponse response,
 		@RequestBody CartRequestDto cartRequestDto
 	) {
 
-		/* 쿠키 목록에서 이름이 'CART'인 쿠키의 값 추출
-		 * 'CART' 쿠키 값은 UTF-8로 인코딩 된 상태
-		 * */
-
-		Cookie cartContentCookie = null;
-
-		String encodedCartValue = null;
-
-		if (request.getCookies() != null) {
-
-			for (Cookie cookie : request.getCookies()) {
-				if (cookie.getName().equals("CART")) {
-
-					cartContentCookie = cookie;
-					encodedCartValue = cartContentCookie.getValue();
-
-					break;
-				}
-			}
-		}
-
-		/* 인코딩 된 문자열 디코딩 후 Jackson으로 CartCookieDto 객체(카트 쿠키 데이터 객체)로 변환
-		 * */
-
-		CartCookieDto cartCookieDto = new CartCookieDto();
-
-		if (encodedCartValue != null) {
-
-			try {
-				String decodedCartValue = URLDecoder.decode(encodedCartValue,
-					StandardCharsets.UTF_8);
-
-				log.info("현제 카트 내부 데이터 : %n{}", decodedCartValue);
-
-				cartCookieDto = objectMapper.readValue(decodedCartValue, CartCookieDto.class);
-
-			} catch (Exception e) {
-
-				Cookie cookie = new Cookie("CART", null);
-				cookie.setMaxAge(0);
-				response.addCookie(cookie);
-
-				throw new RuntimeException("쿠키 변환에 문제가 발생했습니다.");
-			}
-
-		} else {
+		if (cartCookieDto == null) {
 			cartCookieDto = new CartCookieDto();
 		}
 
-
-		/* 요청으로 주어진 메뉴와 옵셥 아이디에 대한 데이터 가져오기
-		 * */
+		// 요청으로 주어진 메뉴와 옵셥 아이디에 대한 데이터 가져오기
 
 		CartMenuResponseDto cartMenuResponseDto = cartService.getSelectedMenuInfo(cartRequestDto);
 
-		/* 카트 쿠키 데이터 객체에 메뉴 추가하기
-		 * */
+		// 카트 쿠키 데이터 객체에 메뉴 추가하기
 
 		cartCookieDto.addMenu(
 			cartMenuResponseDto.getMenu(),
@@ -114,23 +72,55 @@ public class CartController {
 			cartRequestDto.getMenuCount()
 		);
 
+		// 카트 쿠키 데이터 객체를 응답 쿠키에 삽입
 
-		/* 카트 쿠키 데이터 객체를 응답 쿠키에 삽입
-		 * */
 		try {
 
-			cartContentCookie = new Cookie("CART",
-				URLEncoder.encode(objectMapper.writeValueAsString(cartCookieDto), "UTF-8"));
+			Cookie cartContentCookie = new Cookie("CART",
+				URLEncoder.encode(objectMapper.writeValueAsString(cartCookieDto),
+					StandardCharsets.UTF_8));
 
 			cartContentCookie.setMaxAge(60 * 60 * 24);
 			cartContentCookie.setPath("/");
 
+			response.addCookie(cartContentCookie);
+
 		} catch (Exception e) {
-			throw new RuntimeException("장바구니 메뉴 추가에 문제가 발생했습니다.");
+			throw new BusinessException(ExceptionType.JSON_PARSE_ERROR);
 		}
 
-		response.addCookie(cartContentCookie);
-
 		return new ResponseEntity<>(new MessageDto("카트에 주문이 등록됐습니다"), HttpStatus.OK);
+	}
+
+	@ExceptionHandler({NoExistException.class})
+	public ResponseEntity<ExceptionResponse> noExistExceptionHandleException(Exception e) {
+
+		//Map 생성(키랑 값 저장)
+		Map<String, String> errors = new HashMap<>();
+
+		//errors에 이름과 에러 메세지를 추가
+		errors.put("NO_EXIST_EXCEPTION", e.getMessage());
+
+		//정보 담을 객체 생성(상태코드, 코드 값, 에러 정보)
+		ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.NOT_FOUND,
+			HttpStatus.NOT_FOUND.value(), errors);
+
+		return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
+	}
+
+	@ExceptionHandler({IllegalArgumentException.class})
+	public ResponseEntity<ExceptionResponse> illegalArgumentExceptionHandleException(Exception e) {
+
+		//Map 생성(키랑 값 저장)
+		Map<String, String> errors = new HashMap<>();
+
+		//errors에 이름과 에러 메세지를 추가
+		errors.put("NO_EXIST_EXCEPTION", e.getMessage());
+
+		//정보 담을 객체 생성(상태코드, 코드 값, 에러 정보)
+		ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.BAD_REQUEST,
+			HttpStatus.BAD_REQUEST.value(), errors);
+
+		return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
 	}
 }

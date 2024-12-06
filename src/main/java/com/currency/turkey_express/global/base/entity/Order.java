@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Table(name = "orders")
 @Getter
@@ -50,7 +49,7 @@ public class Order extends BaseEntity {
 	private BigDecimal menuPrice;
 
 	private BigDecimal pointPrice;
-	
+
 	private BigDecimal couponPrice;
 
 	@Column(nullable = false)
@@ -59,7 +58,8 @@ public class Order extends BaseEntity {
 	@Column(nullable = false)
 	private Integer selectedCount;
 
-	@Setter
+	private String cancleComment;
+
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private OrderStatus orderStatus;
@@ -67,6 +67,13 @@ public class Order extends BaseEntity {
 	@OneToMany(mappedBy = "order")
 	private List<OrderMenuOption> orderMenuOptions = new ArrayList<>();
 
+	public void setCancleComment(String cancleComment) {
+		this.cancleComment = cancleComment;
+	}
+
+	public void setOrderStatus(OrderStatus orderStatus) {
+		this.orderStatus = orderStatus;
+	}
 
 	public Order(Store store, User user, String address, String phoneNumber, String menuName,
 		BigDecimal menuPrice, BigDecimal pointPrice, BigDecimal couponPrice,

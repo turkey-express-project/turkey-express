@@ -4,11 +4,16 @@ import com.currency.turkey_express.domain.store.dto.StoreMenuResponseDto;
 import com.currency.turkey_express.domain.store.dto.StoreRequestDto;
 import com.currency.turkey_express.domain.store.dto.StoreResponseDto;
 import com.currency.turkey_express.domain.store.service.StoreService;
+import com.currency.turkey_express.global.annotation.UserRequired;
+import com.currency.turkey_express.global.base.entity.User;
 import com.currency.turkey_express.global.base.enums.store.Category;
+import com.currency.turkey_express.global.base.enums.user.UserType;
+import com.currency.turkey_express.global.constant.Const;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,21 +33,29 @@ public class StoreController {
 	private final StoreService storeService;
 
 	//가게 생성
+	@UserRequired(vaild = UserType.OWNER)
 	@PostMapping
-	public ResponseEntity<StoreResponseDto> createStore(@RequestBody StoreRequestDto dto){
-		StoreResponseDto storeResponseDto = storeService.createStore(dto);
+	public ResponseEntity<StoreResponseDto> createStore(@RequestBody StoreRequestDto dto, HttpServletRequest request){
+		HttpSession session = request.getSession(false);
+		User user = (User) session.getAttribute(Const.LOGIN_USER);
+		StoreResponseDto storeResponseDto = storeService.createStore(dto, user.getId());
 		return new ResponseEntity<>(storeResponseDto, HttpStatus.CREATED);
 	}
 
 	//가게 수정
-	@PatchMapping("/{store_id}")
-	public ResponseEntity<StoreResponseDto> updateStore(@PathVariable Long store_id, @RequestBody StoreRequestDto dto) {
-		StoreResponseDto storeResponseDto = storeService.updateStore(store_id, dto);
+	@UserRequired(vaild = UserType.OWNER)
+	@PatchMapping("/{storeId}")
+	public ResponseEntity<StoreResponseDto> updateStore(
+		@PathVariable Long storeId, @RequestBody StoreRequestDto dto, HttpServletRequest request
+	){
+		HttpSession session = request.getSession(false);
+		User user = (User) session.getAttribute(Const.LOGIN_USER);
+		StoreResponseDto storeResponseDto = storeService.updateStore(storeId, user.getId(), dto);
 		return new ResponseEntity<>(storeResponseDto, HttpStatus.OK);
 	}
 
-	/*TODO 즐겨찾기 많은 순으로 정렬*/
 	//가게 다건 조회(필터)
+	@UserRequired
 	@GetMapping
 	public ResponseEntity<List<StoreResponseDto>> getAllStores(
 		@RequestParam(required = false) String name, @RequestParam(required = false) Category category,
@@ -53,16 +66,20 @@ public class StoreController {
 	}
 
 	//가게 단건 조회
-	@GetMapping("/{store_id}")
-	public ResponseEntity<StoreMenuResponseDto> getStore(@PathVariable Long store_id) {
-		StoreMenuResponseDto storeMenuResponseDto = storeService.findByStoreIdInMenus(store_id);
+	@UserRequired
+	@GetMapping("/{storeId}")
+	public ResponseEntity<StoreMenuResponseDto> getStore(@PathVariable Long storeId) {
+		StoreMenuResponseDto storeMenuResponseDto = storeService.findByStoreIdInMenus(storeId);
 		return new ResponseEntity<StoreMenuResponseDto>(storeMenuResponseDto, HttpStatus.OK);
 	}
 
 	//가게 상태 폐업으로 변경
-	@DeleteMapping("/{store_id}")
-	public ResponseEntity<StoreResponseDto> closeStore(@PathVariable Long store_id) {
-		StoreResponseDto storeResponseDto = storeService.setCloseStore(store_id);
+	@UserRequired(vaild = UserType.OWNER)
+	@DeleteMapping("/{storeId}")
+	public ResponseEntity<StoreResponseDto> closeStore(@PathVariable Long storeId, HttpServletRequest request) {
+		HttpSession session = request.getSession(false);
+		User user = (User) session.getAttribute(Const.LOGIN_USER);
+		StoreResponseDto storeResponseDto = storeService.setCloseStore(storeId, user.getId());
 		return new ResponseEntity<>(storeResponseDto, HttpStatus.OK);
 	}
 }
