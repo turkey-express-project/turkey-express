@@ -185,4 +185,13 @@ public class OrderController {
 		return new ResponseEntity<>(new MessageDto("주문이 취소되었습니다."), HttpStatus.OK);
 	}
 
+
+	@LoginRequired
+	@PostMapping("/stores/orders/{orderId}")
+	public void searchStoreOrder(
+		@SessionAttribute(name = Const.LOGIN_USER) Long userId,
+		@PathVariable Long orderId
+	) {
+
+	}
 }
