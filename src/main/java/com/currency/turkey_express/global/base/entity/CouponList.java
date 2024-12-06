@@ -36,4 +36,7 @@ public class CouponList {
 	@Column(nullable = false)
 	private CouponStatus status; //쿠폰 상태
 
+	public void setStatus(CouponStatus status) {
+		this.status = status;
+	}
 }
