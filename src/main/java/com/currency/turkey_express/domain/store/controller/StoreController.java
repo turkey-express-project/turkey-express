@@ -4,11 +4,14 @@ import com.currency.turkey_express.domain.store.dto.StoreMenuResponseDto;
 import com.currency.turkey_express.domain.store.dto.StoreRequestDto;
 import com.currency.turkey_express.domain.store.dto.StoreResponseDto;
 import com.currency.turkey_express.domain.store.service.StoreService;
+import com.currency.turkey_express.global.base.entity.User;
 import com.currency.turkey_express.global.base.enums.store.Category;
+import com.currency.turkey_express.global.constant.Const;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,19 +32,24 @@ public class StoreController {
 
 	//가게 생성
 	@PostMapping
-	public ResponseEntity<StoreResponseDto> createStore(@RequestBody StoreRequestDto dto){
-		StoreResponseDto storeResponseDto = storeService.createStore(dto);
+	public ResponseEntity<StoreResponseDto> createStore(@RequestBody StoreRequestDto dto, HttpServletRequest request){
+		HttpSession session = request.getSession(false);
+		User user = (User) session.getAttribute(Const.LOGIN_USER);
+		StoreResponseDto storeResponseDto = storeService.createStore(dto, user.getId());
 		return new ResponseEntity<>(storeResponseDto, HttpStatus.CREATED);
 	}
 
 	//가게 수정
 	@PatchMapping("/{store_id}")
-	public ResponseEntity<StoreResponseDto> updateStore(@PathVariable Long store_id, @RequestBody StoreRequestDto dto) {
-		StoreResponseDto storeResponseDto = storeService.updateStore(store_id, dto);
+	public ResponseEntity<StoreResponseDto> updateStore(
+		@PathVariable Long store_id, @RequestBody StoreRequestDto dto, HttpServletRequest request
+	){
+		HttpSession session = request.getSession(false);
+		User user = (User) session.getAttribute(Const.LOGIN_USER);
+		StoreResponseDto storeResponseDto = storeService.updateStore(store_id, user.getId(), dto);
 		return new ResponseEntity<>(storeResponseDto, HttpStatus.OK);
 	}
 
-	/*TODO 즐겨찾기 많은 순으로 정렬*/
 	//가게 다건 조회(필터)
 	@GetMapping
 	public ResponseEntity<List<StoreResponseDto>> getAllStores(
@@ -61,8 +69,10 @@ public class StoreController {
 
 	//가게 상태 폐업으로 변경
 	@DeleteMapping("/{store_id}")
-	public ResponseEntity<StoreResponseDto> closeStore(@PathVariable Long store_id) {
-		StoreResponseDto storeResponseDto = storeService.setCloseStore(store_id);
+	public ResponseEntity<StoreResponseDto> closeStore(@PathVariable Long store_id, HttpServletRequest request) {
+		HttpSession session = request.getSession(false);
+		User user = (User) session.getAttribute(Const.LOGIN_USER);
+		StoreResponseDto storeResponseDto = storeService.setCloseStore(store_id, user.getId());
 		return new ResponseEntity<>(storeResponseDto, HttpStatus.OK);
 	}
 }

@@ -11,6 +11,9 @@ import com.currency.turkey_express.domain.user.repository.UserRepository;
 import com.currency.turkey_express.global.base.entity.Store;
 import com.currency.turkey_express.global.base.entity.User;
 import com.currency.turkey_express.global.base.enums.store.Category;
+import com.currency.turkey_express.global.base.enums.user.UserStatus;
+import com.currency.turkey_express.global.exception.BusinessException;
+import com.currency.turkey_express.global.exception.ExceptionType;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,17 +27,18 @@ public class StoreService {
 	private final MenuRepository menuRepository;
 	private final FavoriteRepository favoriteRepository;
 
-	//가게 생성 api
+	/*
+	* 가게 생성 api
+	* - 트랜잭션
+	* - 예외처리 :
+	*   1. 유저 존재, 유저 탈퇴 여부 확인
+	*/
 	@Transactional
-	public StoreResponseDto createStore(StoreRequestDto dto) {
-		Store store = new Store(dto.getStoreName(),dto.getOpenTime(),dto.getCloseTime(),dto.getCategory(),dto.getOrderAmount());
-
-		//이 부분은 로그인 세션이 아직 구현되지 않아 임의로 작성한 부분입니다.
-		//세션 구현시 세션 아이디를 통해 유저 데이터를 받아올 예정입니다.
-		Long id = 1L;
-		User user = userRepository.findById(id).orElseThrow(
-			()->new RuntimeException("User Not Found")
+	public StoreResponseDto createStore(StoreRequestDto dto, Long userId) {
+		Store store = new Store(
+			dto.getStoreName(),dto.getOpenTime(),dto.getCloseTime(),dto.getCategory(),dto.getOrderAmount()
 		);
+		User user = findUserOrElseThrow(userId);
 
 		store.setUser(user);
 		isFullStores(user);
@@ -42,19 +46,18 @@ public class StoreService {
 		return new StoreResponseDto(store);
 	}
 
-	//가게 수정 api
+	/*
+	 * 가게 수정 api
+	 * - 트랜잭션
+	 * - 예외처리 :
+	 *   1. 유저 존재, 유저 탈퇴 여부 확인
+	 *   2. 가게 존재, 가게 폐업 여부 확인
+	 */
 	@Transactional
-	public StoreResponseDto updateStore(Long storeId, StoreRequestDto dto) {
-		//이 부분은 로그인 세션이 아직 구현되지 않아 임의로 작성한 부분입니다.
-		//세션 구현시 세션 아이디를 통해 유저 데이터를 받아올 예정입니다.
-		Long id = 1L;
-		User user = userRepository.findById(id).orElseThrow(
-			()->new RuntimeException("User Not Found")
-		);
+	public StoreResponseDto updateStore(Long storeId, Long userId, StoreRequestDto dto) {
+		User user = findUserOrElseThrow(userId);
+		Store store = findStoreOrElseThrow(storeId);
 
-		Store store = storeRepository.findById(storeId).orElseThrow(
-			()->new RuntimeException("Store Not Found")
-		);
 		store.setStore(dto);
 		store.setUser(user);
 		storeRepository.save(store);
@@ -62,7 +65,11 @@ public class StoreService {
 	}
 
 
-	//
+	/*
+	 * 가게 다건 조회(필터) api
+	 * - 예외처리 :
+	 *   1. 가게 목록이 null 일 경우 확인
+	 */
 	public List<StoreResponseDto> findByFilters(String name, Category category, Long minReviews, Double minRating) {
 		List<StoreResponseDto> storeList;
 		if(name != null || category != null || minReviews != null || minRating != null){
@@ -70,30 +77,45 @@ public class StoreService {
 		}else {
 			storeList = storeRepository.findAllStores();
 		}
+		if(storeList.isEmpty()){
+			throw new BusinessException(ExceptionType.STORE_NOT_FOUND);
+		}
 		return storeList;
 	}
 
-	//가게 단건 조회 (즐겨찾기 갯수, 메뉴 리스트 함께 반환)
+	/*
+	 * 가게 단건 조회(필터) api
+	 * - 예외처리 :
+	 *   1. 가게 존재, 가게 폐업 여부 확인
+	 *   2. 메뉴 존재 여부 확인
+	 */
 	public StoreMenuResponseDto findByStoreIdInMenus(Long storeId) {
-		//예외처리 수정예정
-		Store store = storeRepository.findById(storeId).orElseThrow(
-			()->new RuntimeException("Store Not Found")
-		);
+		Store store = findStoreOrElseThrow(storeId);
 		//favoriteRepository 에서 즐겨찾기 개수를 가져옴
 		Long favoriteCount = favoriteRepository.countByStoreId(storeId);
 		//menuRepository 가게에 존재하는 메뉴 리스트를 가져옴
 		List<MenuInStoreResponseDto> menuInStoreResponsDtoList = menuRepository.findAllByStoreId(storeId);
+		if(menuInStoreResponsDtoList.isEmpty()){
+			throw new BusinessException(ExceptionType.MENU_NOT_FOUND);
+		}
 
 		//위의 정보를 통해 반환 dto 생성
 		return new StoreMenuResponseDto(store, favoriteCount, menuInStoreResponsDtoList);
 	}
 
-	//가게 폐업으로 상태 변경
+	/*
+	 * 가게 수정 api
+	 * - 트랜잭션
+	 * - 예외처리 :
+	 *   1. 가게 존재, 가게 폐업 여부 확인
+	 *   2. 가게 주인 여부 확인
+	 */
 	@Transactional
-	public StoreResponseDto setCloseStore(Long storeId) {
-		Store store = storeRepository.findById(storeId).orElseThrow(
-			()->new RuntimeException("Store Not Found")
-		);
+	public StoreResponseDto setCloseStore(Long storeId, Long userId) {
+		Store store = findStoreOrElseThrow(storeId);
+		if(!store.getUser().getId().equals(userId)){
+			throw new BusinessException(ExceptionType.UNAUTHORIZED_ACCESS);
+		}
 		//가게의 상태를 close로 변경
 		store.setStoreStatusClose();
 		//repository에 저장
@@ -103,14 +125,36 @@ public class StoreService {
 		return new StoreResponseDto(store);
 	}
 
+	/***************************************/
+
 	//한 계정당 생성 가능한 가게의 수를 확인
 	private void isFullStores(User user){
 		int countStores = storeRepository.findAllByUserId(user);
-		//글로벌 예외처리 작성시 수정 예정입니다.
 		if(countStores >= 3){
-			throw new RuntimeException("한 계정 당 3개의 가게까지 생성할 수 있습니다.");
+			throw new BusinessException(ExceptionType.ALREADY_FULL_STORE);
 		}
 	}
 
+	//중복되는 예외처리 코드 메서드로 분리
+	private User findUserOrElseThrow(Long userId) {
+		//유저 관련 예외처리 (유저가 존재하지 않을 시, 또는 유저가 탈퇴 상태일 시)
+		User user = userRepository.findById(userId).orElseThrow(
+			() -> new BusinessException(ExceptionType.USER_NOT_FOUND)
+		);
+		if (user.getUserStatus().equals(UserStatus.DELETE)){
+			throw new BusinessException(ExceptionType.DELETED_USER);
+		}
+		return user;
+	}
 
+	private Store findStoreOrElseThrow(Long storeId) {
+		//가게 관련 예외처리 (가게가 존재하지 않을 시, 또는 폐업 상태일 시)
+		Store store = storeRepository.findById(storeId).orElseThrow(
+			() -> new BusinessException(ExceptionType.STORE_NOT_FOUND)
+		);
+		if (store.getStoreStatus().equals("CLOSE")){
+			throw new BusinessException(ExceptionType.CLOSE_STORE);
+		}
+		return store;
+	}
 }
