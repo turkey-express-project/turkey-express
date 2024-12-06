@@ -4,6 +4,7 @@ import com.currency.turkey_express.domain.cart.dto.CartCookieDto;
 import com.currency.turkey_express.domain.cart.dto.CartMenuResponseDto;
 import com.currency.turkey_express.domain.cart.dto.CartRequestDto;
 import com.currency.turkey_express.domain.cart.service.CartService;
+import com.currency.turkey_express.global.annotation.LoginRequired;
 import com.currency.turkey_express.global.base.dto.MessageDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
@@ -41,7 +42,7 @@ public class CartController {
 	 * @param cartRequestDto
 	 * @return
 	 */
-	/* TODO @LoginRequired */
+	@LoginRequired
 	@PostMapping("")
 	public ResponseEntity<MessageDto> addMenu(
 		HttpServletRequest request,
