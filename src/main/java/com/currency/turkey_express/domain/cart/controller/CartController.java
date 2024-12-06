@@ -47,6 +47,7 @@ public class CartController {
 	 * @param cartRequestDto
 	 * @return
 	 */
+	// TODO 로그인 추가
 	@LoginRequired
 	@PostMapping("")
 	public ResponseEntity<MessageDto> addMenu(
