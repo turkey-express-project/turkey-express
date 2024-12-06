@@ -7,13 +7,11 @@ import com.currency.turkey_express.domain.order.dto.CancleRequestDto;
 import com.currency.turkey_express.domain.order.dto.OrderCreateDto;
 import com.currency.turkey_express.domain.order.dto.OrderRequestDto;
 import com.currency.turkey_express.domain.order.service.OrderService;
-import com.currency.turkey_express.domain.user.service.UserService;
 import com.currency.turkey_express.global.annotation.UserRequired;
 import com.currency.turkey_express.global.base.dto.MessageDto;
 import com.currency.turkey_express.global.base.enums.user.UserType;
 import com.currency.turkey_express.global.constant.Const;
 import com.currency.turkey_express.global.exception.ExceptionResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
@@ -36,11 +34,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 @RequiredArgsConstructor
 public class OrderController {
 
-	private final ObjectMapper objectMapper;
-
 	private final OrderService orderService;
-
-	private final UserService userService;
 
 	/**
 	 * 장바구니 쿠키를 받아와서 주문을 생성하는 API
