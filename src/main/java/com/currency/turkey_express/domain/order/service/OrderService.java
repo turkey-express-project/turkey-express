@@ -17,8 +17,12 @@ import com.currency.turkey_express.global.base.entity.Store;
 import com.currency.turkey_express.global.base.entity.User;
 import com.currency.turkey_express.global.base.enums.coupon.CouponStatus;
 import com.currency.turkey_express.global.base.enums.order.OrderStatus;
+import com.currency.turkey_express.global.base.enums.user.UserType;
+import com.currency.turkey_express.global.exception.BusinessException;
+import com.currency.turkey_express.global.exception.ExceptionType;
 import java.math.BigDecimal;
 import java.sql.Time;
+import java.util.Arrays;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +48,7 @@ public class OrderService {
 	private final PointRepository pointRepository;
 
 	private final OrderMenuOptionRepository orderMenuOptionRepository;
+
 
 	public CouponResponseDto getCoupon(Long couponId) {
 		return new CouponResponseDto(
@@ -135,5 +140,34 @@ public class OrderService {
 			.orElseThrow(() -> new RuntimeException("존재하지 않는 쿠폰입니다"));
 
 		coupon.setStatus(CouponStatus.EXPIRED);
+	}
+
+	public void processNext(Long orderId, Long userId) {
+
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new BusinessException(ExceptionType.USER_NOT_FOUND));
+
+		if (!user.getUserType().equals(UserType.OWNER)) {
+			throw new BusinessException(ExceptionType.UNAUTHORIZED);
+		}
+
+		Order order = orderRepository.findById(orderId)
+			.orElseThrow(() -> new RuntimeException("존재하지 않는 주문입니다"));
+
+		if (order.getOrderStatus().equals(OrderStatus.ORDER_REJECTED)) {
+			throw new RuntimeException("거절된 주문을 진행할 수 없습니다");
+		}
+
+		OrderStatus[] orderStatuses = OrderStatus.values();
+		log.info("{}", Arrays.toString(orderStatuses));
+
+		int nextOrderIdx = order.getOrderStatus().ordinal() + 1;
+		log.info("현재 인덱스 {}", order.getOrderStatus().ordinal());
+		if (orderStatuses.length <= nextOrderIdx) {
+			throw new RuntimeException("이미 완료된 주문입니다");
+		}
+
+		order.setOrderStatus(orderStatuses[nextOrderIdx]);
+
 	}
 }
