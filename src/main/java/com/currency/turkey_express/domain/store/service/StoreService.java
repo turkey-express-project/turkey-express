@@ -100,9 +100,6 @@ public class StoreService {
 		Long favoriteCount = favoriteRepository.countByStoreId(storeId);
 		//menuRepository 가게에 존재하는 메뉴 리스트를 가져옴
 		List<MenuInStoreResponseDto> menuInStoreResponsDtoList = menuRepository.findAllByStoreId(storeId);
-		if(menuInStoreResponsDtoList.isEmpty()){
-			throw new BusinessException(ExceptionType.MENU_NOT_FOUND);
-		}
 
 		//위의 정보를 통해 반환 dto 생성
 		return new StoreMenuResponseDto(store, favoriteCount, menuInStoreResponsDtoList);
