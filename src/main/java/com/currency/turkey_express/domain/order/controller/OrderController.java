@@ -14,8 +14,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,14 +49,14 @@ public class OrderController {
 	@PostMapping("")
 	public ResponseEntity<MessageDto> createOrder(
 		@SessionAttribute(name = Const.LOGIN_USER) Long userId,
-		@CookieValue(value = "CART") String encodedCartValue,
+		@CookieValue(value = "CART", required = false) String CartValue,
 		HttpServletRequest request,
 		@RequestBody OrderRequestDto orderRequestDto
 	) {
 		//쿠키에 있는 장바구니 데이터를 Jackson으로 객체로 파싱하기 가져오기
 
 		CartCookieDto cartData = getCartCookieDto(
-			encodedCartValue);
+			CartValue);
 
 		// 주문 금액 총합 객체 초기화, 장바구니에 있는 총합으로 초기화
 		BigDecimal totalPrice = cartData.getTotalPrice();
@@ -122,18 +120,16 @@ public class OrderController {
 		return new ResponseEntity<>(new MessageDto("주문 요청 완료"), HttpStatus.CREATED);
 	}
 
-	private CartCookieDto getCartCookieDto(String encodedCartValue) {
-		if (encodedCartValue == null) {
-			throw new RuntimeException("장바구니 정보가 없습니다.");
-		}
+	private CartCookieDto getCartCookieDto(String CartValue) {
 
-		String decodedCartValue = URLDecoder.decode(encodedCartValue,
-			StandardCharsets.UTF_8);
+		if (CartValue == null) {
+			throw new RuntimeException("장바구니 쿠키가 없습니다.");
+		}
 
 		CartCookieDto cartData = null;
 
 		try {
-			cartData = objectMapper.readValue(decodedCartValue, CartCookieDto.class);
+			cartData = objectMapper.readValue(CartValue, CartCookieDto.class);
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
 		}
