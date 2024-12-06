@@ -49,14 +49,15 @@ public class Order extends BaseEntity {
 	@Column(nullable = false)
 	private BigDecimal menuPrice;
 
-	@Column(nullable = false)
 	private BigDecimal pointPrice;
-
-	@Column(nullable = false)
+	
 	private BigDecimal couponPrice;
 
 	@Column(nullable = false)
-	private BigDecimal totalOrderPrice;
+	private String orderGroupIdentifier;
+
+	@Column(nullable = false)
+	private Integer selectedCount;
 
 	@Setter
 	@Enumerated(EnumType.STRING)
@@ -66,10 +67,10 @@ public class Order extends BaseEntity {
 	@OneToMany(mappedBy = "order")
 	private List<OrderMenuOption> orderMenuOptions = new ArrayList<>();
 
+
 	public Order(Store store, User user, String address, String phoneNumber, String menuName,
 		BigDecimal menuPrice, BigDecimal pointPrice, BigDecimal couponPrice,
-		BigDecimal totalOrderPrice,
-		OrderStatus orderStatus, List<OrderMenuOption> orderMenuOptions) {
+		String orderGroupIdentifier, Integer selectedCount, OrderStatus orderStatus) {
 		this.store = store;
 		this.user = user;
 		this.address = address;
@@ -78,8 +79,8 @@ public class Order extends BaseEntity {
 		this.menuPrice = menuPrice;
 		this.pointPrice = pointPrice;
 		this.couponPrice = couponPrice;
-		this.totalOrderPrice = totalOrderPrice;
+		this.orderGroupIdentifier = orderGroupIdentifier;
+		this.selectedCount = selectedCount;
 		this.orderStatus = orderStatus;
-		this.orderMenuOptions = orderMenuOptions;
 	}
 }
