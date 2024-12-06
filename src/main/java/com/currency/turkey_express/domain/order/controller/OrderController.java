@@ -48,7 +48,7 @@ public class OrderController {
 	 */
 	@LoginRequired
 	@PostMapping("")
-	public void createOrder(
+	public ResponseEntity<MessageDto> createOrder(
 		@SessionAttribute(name = Const.LOGIN_USER) Long userId,
 		@CookieValue(value = "CART") String encodedCartValue,
 		HttpServletRequest request,
@@ -118,6 +118,7 @@ public class OrderController {
 			);
 		}
 
+		return new ResponseEntity<>(new MessageDto("주문 요청 완료"), HttpStatus.CREATED);
 	}
 
 
