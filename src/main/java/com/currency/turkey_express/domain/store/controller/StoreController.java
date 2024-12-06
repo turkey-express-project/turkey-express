@@ -34,7 +34,7 @@ public class StoreController {
 	private final StoreService storeService;
 
 	//가게 생성
-	@UserRequired(userType = UserType.OWNER)
+	@UserRequired(vaild = "OWNER")
 	@PostMapping
 	public ResponseEntity<StoreResponseDto> createStore(@RequestBody StoreRequestDto dto, HttpServletRequest request){
 		HttpSession session = request.getSession(false);
@@ -44,7 +44,7 @@ public class StoreController {
 	}
 
 	//가게 수정
-	@UserRequired(userType = UserType.OWNER)
+	@UserRequired(vaild = "OWNER")
 	@PatchMapping("/{store_id}")
 	public ResponseEntity<StoreResponseDto> updateStore(
 		@PathVariable Long store_id, @RequestBody StoreRequestDto dto, HttpServletRequest request
@@ -75,7 +75,7 @@ public class StoreController {
 	}
 
 	//가게 상태 폐업으로 변경
-	@UserRequired(userType = UserType.OWNER)
+	@UserRequired(vaild = "OWNER")
 	@DeleteMapping("/{store_id}")
 	public ResponseEntity<StoreResponseDto> closeStore(@PathVariable Long store_id, HttpServletRequest request) {
 		HttpSession session = request.getSession(false);
