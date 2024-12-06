@@ -1,4 +1,4 @@
-package com.currency.turkey_express.domain.menu.contorller;
+package com.currency.turkey_express.domain.menu.controller;
 
 import com.currency.turkey_express.domain.menu.dto.MenuRequestDto;
 import com.currency.turkey_express.domain.menu.dto.MenuResponseDto;
@@ -6,8 +6,6 @@ import com.currency.turkey_express.domain.menu.service.MenuService;
 import com.currency.turkey_express.global.annotation.LoginRequired;
 import com.currency.turkey_express.global.base.entity.User;
 import com.currency.turkey_express.global.constant.Const;
-import com.currency.turkey_express.global.exception.BusinessException;
-import com.currency.turkey_express.global.exception.ExceptionType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
