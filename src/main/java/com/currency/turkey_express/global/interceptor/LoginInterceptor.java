@@ -8,10 +8,12 @@ import com.currency.turkey_express.global.exception.UnauthenticatedException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+@Slf4j
 @Component
 public class LoginInterceptor implements HandlerInterceptor {
 
@@ -35,10 +37,10 @@ public class LoginInterceptor implements HandlerInterceptor {
 
 		// 로그인하지 않은 사용자인 경우
 		if (session == null || session.getAttribute(Const.LOGIN_USER) == null) {
+			log.info("LoginInterceptor : 사용자 세션이 존재하지 않습니다.");
 			throw new UnauthenticatedException(ExceptionType.NOT_LOGIN);
 		}
 
-		//----추가한 코드
 		//세션에서 로그인된 사용자 정보 가져오기
 		User user = (User) session.getAttribute(Const.LOGIN_USER);
 
