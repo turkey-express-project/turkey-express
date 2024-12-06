@@ -2,19 +2,24 @@ package com.currency.turkey_express.domain.order.controller;
 
 import com.currency.turkey_express.domain.cart.dto.CartCookieDto;
 import com.currency.turkey_express.domain.coupon.dto.CouponResponseDto;
+import com.currency.turkey_express.domain.order.dto.CancleRequestDto;
 import com.currency.turkey_express.domain.order.dto.OrderCreateDto;
 import com.currency.turkey_express.domain.order.dto.OrderRequestDto;
 import com.currency.turkey_express.domain.order.service.OrderService;
+import com.currency.turkey_express.domain.user.service.UserService;
 import com.currency.turkey_express.global.annotation.LoginRequired;
+import com.currency.turkey_express.global.base.dto.MessageDto;
 import com.currency.turkey_express.global.constant.Const;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +35,8 @@ public class OrderController {
 
 	private final OrderService orderService;
 
+	private final UserService userService;
+
 	/**
 	 * 장바구니 쿠키를 받아와서 주문을 생성하는 API
 	 *
@@ -40,16 +47,16 @@ public class OrderController {
 	 */
 	@LoginRequired
 	@PostMapping("")
-	public void createOrder(
+	public ResponseEntity<MessageDto> createOrder(
 		@SessionAttribute(name = Const.LOGIN_USER) Long userId,
-		@CookieValue(value = "CART") String encodedCartValue,
+		@CookieValue(value = "CART", required = false) String CartValue,
 		HttpServletRequest request,
 		@RequestBody OrderRequestDto orderRequestDto
 	) {
 		//쿠키에 있는 장바구니 데이터를 Jackson으로 객체로 파싱하기 가져오기
 
 		CartCookieDto cartData = getCartCookieDto(
-			encodedCartValue);
+			CartValue);
 
 		// 주문 금액 총합 객체 초기화, 장바구니에 있는 총합으로 초기화
 		BigDecimal totalPrice = cartData.getTotalPrice();
@@ -110,20 +117,19 @@ public class OrderController {
 			);
 		}
 
+		return new ResponseEntity<>(new MessageDto("주문 요청 완료"), HttpStatus.CREATED);
 	}
 
-	private CartCookieDto getCartCookieDto(String encodedCartValue) {
-		if (encodedCartValue == null) {
-			throw new RuntimeException("장바구니 정보가 없습니다.");
-		}
+	private CartCookieDto getCartCookieDto(String CartValue) {
 
-		String decodedCartValue = URLDecoder.decode(encodedCartValue,
-			StandardCharsets.UTF_8);
+		if (CartValue == null) {
+			throw new RuntimeException("장바구니 쿠키가 없습니다.");
+		}
 
 		CartCookieDto cartData = null;
 
 		try {
-			cartData = objectMapper.readValue(decodedCartValue, CartCookieDto.class);
+			cartData = objectMapper.readValue(CartValue, CartCookieDto.class);
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
 		}
@@ -132,5 +138,56 @@ public class OrderController {
 			throw new RuntimeException("장바구니에 메뉴를 담아주세요");
 		}
 		return cartData;
+	}
+
+
+	/**
+	 * 주문 진행 API
+	 *
+	 * @param userId  유저 아이디
+	 * @param orderId 주문 아이디
+	 * @return
+	 */
+	@LoginRequired
+	@PatchMapping("/{orderId}")
+	public ResponseEntity<MessageDto> processOrder(
+		@SessionAttribute(name = Const.LOGIN_USER) Long userId,
+		@PathVariable Long orderId
+	) {
+		//주문 접근해서 다음 상태로 변경
+		orderService.processNext(orderId, userId);
+
+		return new ResponseEntity<>(new MessageDto("다음 주문상태로 넘어갑니다"), HttpStatus.OK);
+	}
+
+	/**
+	 * 주문 최소 API
+	 *
+	 * @param userId           유저 아이디
+	 * @param orderId          주문 아이디
+	 * @param cancleRequestDto 요청 취소 DTO
+	 * @return
+	 */
+	@LoginRequired
+	@PostMapping("/{orderId}")
+	public ResponseEntity<MessageDto> cancleOrder(
+		@SessionAttribute(name = Const.LOGIN_USER) Long userId,
+		@PathVariable Long orderId,
+		@RequestBody CancleRequestDto cancleRequestDto
+	) {
+		//주문 접근해서 취소 상태로 변경
+		orderService.cancleOrder(orderId, userId, cancleRequestDto);
+
+		return new ResponseEntity<>(new MessageDto("주문이 취소되었습니다."), HttpStatus.OK);
+	}
+
+
+	@LoginRequired
+	@PostMapping("/stores/orders/{orderId}")
+	public void searchStoreOrder(
+		@SessionAttribute(name = Const.LOGIN_USER) Long userId,
+		@PathVariable Long orderId
+	) {
+
 	}
 }
