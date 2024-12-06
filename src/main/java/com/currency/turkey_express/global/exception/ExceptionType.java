@@ -11,6 +11,9 @@ public enum ExceptionType {
 	USER_NOT_MATCH(HttpStatus.BAD_REQUEST, "유저의 정보가 일치하지 않습니다."),
 	DELETED_USER(HttpStatus.BAD_REQUEST, "해당 유저는 이미 탈퇴되었습니다."),
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 유저를 찾을 수 없습니다."),
+	STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 가게를 찾을 수 없습니다."),
+	CLOSE_STORE(HttpStatus.NOT_FOUND, "해당 가게는 폐업되었습니다.."),
+	SELF_ADD_FAVORITE(HttpStatus.BAD_REQUEST,"자신의 가게는 즐겨찾기 할 수 없습니다."),
 	PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
 	ALREADY_LOGGED_IN(HttpStatus.UNAUTHORIZED, "이미 로그인 되어있는 사용자입니다."),
 	NOT_LOGIN(HttpStatus.UNAUTHORIZED, "사용자 세션이 존재하지 않습니다. 로그인을 해주세요.");
