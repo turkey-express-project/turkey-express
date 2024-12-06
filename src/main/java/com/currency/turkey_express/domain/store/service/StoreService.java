@@ -52,11 +52,16 @@ public class StoreService {
 	 * - 예외처리 :
 	 *   1. 유저 존재, 유저 탈퇴 여부 확인
 	 *   2. 가게 존재, 가게 폐업 여부 확인
+	 *   3. 가게 사장님이 로그인 유저와 같은지 확인
 	 */
 	@Transactional
 	public StoreResponseDto updateStore(Long storeId, Long userId, StoreRequestDto dto) {
 		User user = findUserOrElseThrow(userId);
 		Store store = findStoreOrElseThrow(storeId);
+
+		if(!store.getUser().getId().equals(userId)){
+			throw new BusinessException(ExceptionType.UNAUTHORIZED_ACCESS);
+		}
 
 		store.setStore(dto);
 		store.setUser(user);
@@ -104,7 +109,7 @@ public class StoreService {
 	}
 
 	/*
-	 * 가게 수정 api
+	 * 가게 폐업 api
 	 * - 트랜잭션
 	 * - 예외처리 :
 	 *   1. 가게 존재, 가게 폐업 여부 확인
@@ -125,7 +130,7 @@ public class StoreService {
 		return new StoreResponseDto(store);
 	}
 
-	/***************************************/
+	/********************중복되는 예외처리 코드 메서드로 분리*****************************/
 
 	//한 계정당 생성 가능한 가게의 수를 확인
 	private void isFullStores(User user){
@@ -135,7 +140,6 @@ public class StoreService {
 		}
 	}
 
-	//중복되는 예외처리 코드 메서드로 분리
 	private User findUserOrElseThrow(Long userId) {
 		//유저 관련 예외처리 (유저가 존재하지 않을 시, 또는 유저가 탈퇴 상태일 시)
 		User user = userRepository.findById(userId).orElseThrow(
