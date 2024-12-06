@@ -10,14 +10,16 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 
 @Table(name = "point")
 @Getter
 @Entity
 @NoArgsConstructor
-public class Point extends BaseEntity {
+public class Point {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,6 +32,13 @@ public class Point extends BaseEntity {
 
 	@Column(nullable = false)
 	private BigDecimal point; //적립금액
+
+	@CreatedDate
+	@Column(updatable = false)
+	private LocalDateTime createdAt; //포인트 생성일
+
+	@Column(updatable = false)
+	private LocalDateTime endDate;//포인트 만료일자
 
 	public Point(User user, BigDecimal point) {
 		this.user = user;
