@@ -1,4 +1,4 @@
-package com.currency.turkey_express.domain.order.repository;
+package com.currency.turkey_express.domain.point.repository;
 
 import com.currency.turkey_express.global.base.entity.Point;
 import org.springframework.data.jpa.repository.JpaRepository;
