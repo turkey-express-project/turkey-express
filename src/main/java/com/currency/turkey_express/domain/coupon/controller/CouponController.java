@@ -19,5 +19,9 @@ public class CouponController {
 	 * 쿠폰 등록 API 쿠폰 테이블에 쿠폰 데이터 저장
 	 */
 
+	/**
+	 * 쿠폰 조회 API 쿠폰 테이블에 저장된 쿠폰 데이터 조회
+	 */
+
 
 }

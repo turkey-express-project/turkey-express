@@ -20,7 +20,10 @@ public class UserService {
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 
-	//회원가입
+	/**
+	 * 회원가입 API
+	 * TODO 회원가입 유효성 검사 예외처리 하기
+	 */
 	@Transactional
 	public UserResponseDto signUp(String email, String userNickname, String password,
 		UserType userType)
@@ -40,7 +43,10 @@ public class UserService {
 		return UserResponseDto.toDto(savedUser);
 	}
 
-	//로그인
+	/**
+	 * 로그인 API
+	 * TODO 이메일 유효성 검사 예외처리 하기
+	 */
 	public User login(String email, String password) {
 
 		//사용자 email 확인

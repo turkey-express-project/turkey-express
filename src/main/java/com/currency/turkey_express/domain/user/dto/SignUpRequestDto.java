@@ -11,13 +11,13 @@ public class SignUpRequestDto {
 	private final String email; //이메일
 
 	@NotBlank
-	private final String userNickname; //닉네임
+	private String userNickname; //닉네임
 
 	@NotBlank
-	private final String password; //비밀번호
+	private String password; //비밀번호
 
 	@NotBlank
-	private final UserType userType; //유저 타입
+	private UserType userType; //유저 타입
 
 	public SignUpRequestDto(String email, String userNickname, String password, UserType userType) {
 		this.email = email;
