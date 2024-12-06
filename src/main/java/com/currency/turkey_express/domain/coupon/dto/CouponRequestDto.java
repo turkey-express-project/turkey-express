@@ -1,13 +1,14 @@
 package com.currency.turkey_express.domain.coupon.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import lombok.Getter;
 
 @Getter
 public class CouponRequestDto {
 
-	@NotBlank
+	@NotNull
 	private final String couponName; //쿠폰 이름
 
 	@NotBlank

@@ -36,9 +36,18 @@ public class CouponList {
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private CouponStatus status; //쿠폰 상태
+	private CouponStatus status = CouponStatus.OK; //쿠폰 상태 : 디폴트 유효
+
+	//쿠폰 수령
+	public CouponList(User user, Coupon coupon, CouponStatus status) {
+		this.user = user;
+		this.coupon = coupon;
+		this.status = status;
+	}
 
 	public void setStatus(CouponStatus status) {
 		this.status = status;
 	}
+
+
 }

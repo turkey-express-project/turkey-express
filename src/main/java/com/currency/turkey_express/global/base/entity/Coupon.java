@@ -29,4 +29,10 @@ public class Coupon extends BaseEntity {
 	@Column(nullable = false)
 	private BigDecimal maxDiscount; //쿠폰 최대 할인금액
 
+	//쿠폰 등록
+	public Coupon(String couponName, Integer discountValue, BigDecimal maxDiscount) {
+		this.couponName = couponName;
+		this.discountValue = discountValue;
+		this.maxDiscount = maxDiscount;
+	}
 }
