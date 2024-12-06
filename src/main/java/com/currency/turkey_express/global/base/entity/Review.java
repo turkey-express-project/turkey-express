@@ -35,12 +35,16 @@ public class Review {
 	@Column(name = "create_at", nullable = false)
 	private LocalDateTime createAt;
 
+	@Column(nullable = false)
+	private String orderGroupIdentifier;	// 주문 그룹 식별자
 
-	public Review(Order order, int point, String contents, LocalDateTime createAt) {
+
+	public Review(Order order, int point, String contents, String orderGroupIdentifier) {
 		this.order = order;
 		this.point = point;
 		this.contents = contents;
 		this.createAt = LocalDateTime.now();
+		this.orderGroupIdentifier = orderGroupIdentifier;
 	}
 
 	public Review() {
