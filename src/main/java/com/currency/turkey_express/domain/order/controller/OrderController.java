@@ -122,32 +122,6 @@ public class OrderController {
 		return new ResponseEntity<>(new MessageDto("주문 요청 완료"), HttpStatus.CREATED);
 	}
 
-
-	@LoginRequired
-	@PatchMapping("/{orderId}")
-	public ResponseEntity<MessageDto> processOrder(
-		@SessionAttribute(name = Const.LOGIN_USER) Long userId,
-		@PathVariable Long orderId
-	) {
-		//주문 접근해서 다음 상태로 변경
-		orderService.processNext(orderId, userId);
-
-		return new ResponseEntity<>(new MessageDto("다음 주문상태로 넘어갑니다"), HttpStatus.OK);
-	}
-
-	@LoginRequired
-	@PostMapping("/{orderId}")
-	public ResponseEntity<MessageDto> cancleOrder(
-		@SessionAttribute(name = Const.LOGIN_USER) Long userId,
-		@PathVariable Long orderId,
-		@RequestBody CancleRequestDto cancleRequestDto
-	) {
-		//주문 접근해서 취소 상태로 변경
-		orderService.cancleOrder(orderId, userId, cancleRequestDto);
-
-		return new ResponseEntity<>(new MessageDto("주문이 취소되었습니다."), HttpStatus.OK);
-	}
-
 	private CartCookieDto getCartCookieDto(String encodedCartValue) {
 		if (encodedCartValue == null) {
 			throw new RuntimeException("장바구니 정보가 없습니다.");
@@ -169,4 +143,46 @@ public class OrderController {
 		}
 		return cartData;
 	}
+
+
+	/**
+	 * 주문 진행 API
+	 *
+	 * @param userId  유저 아이디
+	 * @param orderId 주문 아이디
+	 * @return
+	 */
+	@LoginRequired
+	@PatchMapping("/{orderId}")
+	public ResponseEntity<MessageDto> processOrder(
+		@SessionAttribute(name = Const.LOGIN_USER) Long userId,
+		@PathVariable Long orderId
+	) {
+		//주문 접근해서 다음 상태로 변경
+		orderService.processNext(orderId, userId);
+
+		return new ResponseEntity<>(new MessageDto("다음 주문상태로 넘어갑니다"), HttpStatus.OK);
+	}
+
+	/**
+	 * 주문 최소 API
+	 *
+	 * @param userId           유저 아이디
+	 * @param orderId          주문 아이디
+	 * @param cancleRequestDto 요청 취소 DTO
+	 * @return
+	 */
+	@LoginRequired
+	@PostMapping("/{orderId}")
+	public ResponseEntity<MessageDto> cancleOrder(
+		@SessionAttribute(name = Const.LOGIN_USER) Long userId,
+		@PathVariable Long orderId,
+		@RequestBody CancleRequestDto cancleRequestDto
+	) {
+		//주문 접근해서 취소 상태로 변경
+		orderService.cancleOrder(orderId, userId, cancleRequestDto);
+
+		return new ResponseEntity<>(new MessageDto("주문이 취소되었습니다."), HttpStatus.OK);
+	}
+
 }
