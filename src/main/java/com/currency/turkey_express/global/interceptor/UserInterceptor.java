@@ -53,9 +53,17 @@ public class UserInterceptor implements HandlerInterceptor {
 		}
 
 		//만약 어노테이션 속성 값이 UserType.OWNER 라면 owner 검증 로직 실행
-		if (userRequired.userType().equals(UserType.OWNER)){
+		if (userRequired.vaild().equals(UserType.OWNER.toString())){
 			if (user.getUserType().equals(
 				UserType.CUSTOMER)
+			){
+				throw new BusinessException(ExceptionType.UNAUTHORIZED_ACCESS);
+			}
+		}
+		//만약 어노테이션 속성 값이 CUSTOMER 라면 customer 검증 로직 실행
+		if (userRequired.vaild().equals(UserType.CUSTOMER.toString())){
+			if (user.getUserType().equals(
+				UserType.OWNER)
 			){
 				throw new BusinessException(ExceptionType.UNAUTHORIZED_ACCESS);
 			}

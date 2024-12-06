@@ -9,5 +9,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface UserRequired {
-	UserType userType() default UserType.CUSTOMER;
+	String vaild() default "DEFAULT";
 }
