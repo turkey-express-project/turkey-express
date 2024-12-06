@@ -2,13 +2,13 @@ package com.currency.turkey_express.domain.favorite.controller;
 
 import com.currency.turkey_express.domain.favorite.dto.FavoriteResponseDto;
 import com.currency.turkey_express.domain.favorite.service.FavoriteService;
+import com.currency.turkey_express.global.annotation.LoginRequired;
 import com.currency.turkey_express.global.base.dto.MessageDto;
 import com.currency.turkey_express.global.base.entity.User;
 import com.currency.turkey_express.global.constant.Const;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +27,7 @@ public class FavoriteController {
 	private final FavoriteService favoriteService;
 
 	//즐겨찾기 추가
+	@LoginRequired
 	@PostMapping("/stores/{storeId}/favorites")
 	public ResponseEntity<MessageDto> createFavorite(@PathVariable Long storeId, HttpServletRequest request) {
 		//로그인 세션 user로 가져옴
@@ -39,6 +40,7 @@ public class FavoriteController {
 	}
 
 	//즐겨찾기 삭제
+	@LoginRequired
 	@DeleteMapping("/stores/{storeId}/favorites")
 	public ResponseEntity<MessageDto> deleteFavorite(@PathVariable Long storeId, HttpServletRequest request) {
 		//로그인 세션 user로 가져옴
@@ -51,6 +53,7 @@ public class FavoriteController {
 	}
 
 	//즐겨찾기 목록 조회(가게 이름만 출력)
+	@LoginRequired
 	@GetMapping("/users/favorites")
 	public ResponseEntity<List<FavoriteResponseDto>> getStoreByFavorite(HttpServletRequest request) {
 		//로그인 세션 user로 가져옴
