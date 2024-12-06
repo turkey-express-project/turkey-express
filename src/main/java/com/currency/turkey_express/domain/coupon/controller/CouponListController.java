@@ -10,13 +10,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/couponList")
 public class CouponListController {
+
 	/**
 	 * 쿠폰 수령(유저별) API
 	 * 쿠폰 리스트 테이블에 데이터 저장
 	 */
 
 	/**
-	 * 쿠폰 목룍(유저별) API
+	 * 쿠폰 목록(유저별) API
 	 * 쿠폰 리스트 테이블 목록 조회
 	 */
+
 }
