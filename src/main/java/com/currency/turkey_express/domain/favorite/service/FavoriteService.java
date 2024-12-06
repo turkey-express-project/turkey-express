@@ -23,6 +23,7 @@ public class FavoriteService {
 	private final StoreRepository storeRepository;
 	private final UserRepository userRepository;
 
+	//즐겨찾기 추가
 	@Transactional
 	public MessageDto createFavorite(Long storeId, Long userId) {
 		Store store = findStoreOrElseThrow(storeId);
@@ -39,6 +40,7 @@ public class FavoriteService {
 		return new MessageDto("즐겨찾기에 추가되었습니다.");
 	}
 
+	//즐겨찾기 삭제
 	@Transactional
 	public MessageDto deleteFavorite(Long storeId, Long userId) {
 		Store store = findStoreOrElseThrow(storeId);
@@ -50,6 +52,7 @@ public class FavoriteService {
 		return new MessageDto("즐겨찾기에서 삭제되었습니다.");
 	}
 
+	//즐겨찾기 로그인 세션 기준으로 조회
 	public List<FavoriteResponseDto> findByUserId(Long userId) {
 		List<FavoriteResponseDto> favoriteResponseDtoList = favoriteRepository.findAllByUserId(userId);
 		return favoriteResponseDtoList;
