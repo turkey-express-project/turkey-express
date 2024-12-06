@@ -1,6 +1,6 @@
 package com.currency.turkey_express.global.interceptor;
 
-import com.currency.turkey_express.global.annotation.UserRoleRequired;
+import com.currency.turkey_express.global.annotation.UserRequired;
 import com.currency.turkey_express.global.base.entity.User;
 import com.currency.turkey_express.global.base.enums.user.UserStatus;
 import com.currency.turkey_express.global.base.enums.user.UserType;
@@ -18,7 +18,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 @Slf4j
 @Component
-public class UserRoleInterceptor implements HandlerInterceptor {
+public class UserInterceptor implements HandlerInterceptor {
 
 	@Override
 	public boolean preHandle(
@@ -26,13 +26,16 @@ public class UserRoleInterceptor implements HandlerInterceptor {
 		HttpServletResponse response,
 		Object handler
 	){
+		//핸들러 사용, 어노테이션 받아옴
 		HandlerMethod handlerMethod = (HandlerMethod) handler;
-		UserRoleRequired userRoleRequired = handlerMethod.getMethodAnnotation(UserRoleRequired.class);
+		UserRequired userRequired = handlerMethod.getMethodAnnotation(UserRequired.class);
 
-		if(userRoleRequired == null){
+		//어노테이션이 존재하지 않는다면 true 반환
+		if(userRequired == null){
 			return true;
 		}
 
+		//세션 받아옴
 		HttpSession session = request.getSession(false);
 
 		// 로그인하지 않은 사용자인 경우
@@ -41,17 +44,21 @@ public class UserRoleInterceptor implements HandlerInterceptor {
 			throw new UnauthenticatedException(ExceptionType.NOT_LOGIN);
 		}
 
+		//세션에서 유저 엔티티 생성
 		User user = (User) session.getAttribute(Const.LOGIN_USER);
-
 		if (user.getUserStatus().equals(
 			UserStatus.DELETE)
 		){
 			throw new BusinessException(ExceptionType.DELETED_USER);
 		}
-		if (user.getUserType().equals(
-			UserType.CUSTOMER)
-		){
-			throw new BusinessException(ExceptionType.UNAUTHORIZED_ACCESS);
+
+		//만약 어노테이션 속성 값이 UserType.OWNER 라면 owner 검증 로직 실행
+		if (userRequired.userType().equals(UserType.OWNER)){
+			if (user.getUserType().equals(
+				UserType.CUSTOMER)
+			){
+				throw new BusinessException(ExceptionType.UNAUTHORIZED_ACCESS);
+			}
 		}
 
 		request.setAttribute("loginUserId", user.getId());
