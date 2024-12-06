@@ -149,14 +149,14 @@ public class OrderService {
 			.orElseThrow(() -> new BusinessException(ExceptionType.USER_NOT_FOUND));
 
 		if (!user.getUserType().equals(UserType.OWNER)) {
-			throw new BusinessException(ExceptionType.UNAUTHORIZED);
+			throw new BusinessException(ExceptionType.UNAUTHORIZED_ACCESS);
 		}
 
 		Order order = orderRepository.findById(orderId)
 			.orElseThrow(() -> new RuntimeException("존재하지 않는 주문입니다"));
 
 		if (!order.getStore().getUser().getId().equals(userId)) {
-			throw new BusinessException(ExceptionType.UNAUTHORIZED);
+			throw new BusinessException(ExceptionType.UNAUTHORIZED_ACCESS);
 		}
 
 		if (order.getOrderStatus().equals(OrderStatus.ORDER_REJECTED)) {
@@ -182,14 +182,14 @@ public class OrderService {
 			.orElseThrow(() -> new BusinessException(ExceptionType.USER_NOT_FOUND));
 
 		if (!user.getUserType().equals(UserType.OWNER)) {
-			throw new BusinessException(ExceptionType.UNAUTHORIZED);
+			throw new BusinessException(ExceptionType.UNAUTHORIZED_ACCESS);
 		}
 
 		Order order = orderRepository.findById(orderId)
 			.orElseThrow(() -> new RuntimeException("존재하지 않는 주문입니다"));
 
 		if (!order.getStore().getUser().getId().equals(userId)) {
-			throw new BusinessException(ExceptionType.UNAUTHORIZED);
+			throw new BusinessException(ExceptionType.UNAUTHORIZED_ACCESS);
 		}
 
 		if (order.getOrderStatus().equals(OrderStatus.ORDER_REJECTED)) {
