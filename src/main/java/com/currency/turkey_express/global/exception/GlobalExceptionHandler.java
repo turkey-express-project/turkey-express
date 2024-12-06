@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
 	// BusinessException에서 발생한 에러(비지니스 로직)
-	@ExceptionHandler({BusinessException.class, UnauthenticatedException.class})
+	@ExceptionHandler({BusinessException.class})
 	public ResponseEntity<ExceptionResponse> handleBusinessException(BusinessException exception) {
 		//BusinessException에서 ExceptionType을 가져오기(상태코드 & 에러메세지)
 		ExceptionType exceptionType = exception.getExceptionType();

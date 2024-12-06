@@ -33,7 +33,9 @@ public class UserContoroller {
 
 	private final UserService userService;
 
-	//회원가입
+	/**
+	 * 회원가입 API
+	 */
 	@PostMapping("/signup")
 	public ResponseEntity<UserResponseDto> signUp(@RequestBody SignUpRequestDto signUpRequestDto)
 		throws IOException {
@@ -54,7 +56,9 @@ public class UserContoroller {
 		return new ResponseEntity<>(userResponseDto, HttpStatus.CREATED);
 	}
 
-	//로그인
+	/**
+	 * 로그인 API
+	 */
 	@PostMapping("/login")
 	public ResponseEntity<MessageDto> login(@RequestBody LoginRequestDto loginRequestDto,
 		HttpServletRequest httpServletRequest)
@@ -69,7 +73,7 @@ public class UserContoroller {
 			loginRequestDto.getPassword()
 		);
 
-		//사용자 session 존재하면 가져오기 세션 없으면 null 반환
+		//사용자 session이 없으면 생성
 		HttpSession session = httpServletRequest.getSession(true);
 
 		//중복 로그인 방지
@@ -86,7 +90,35 @@ public class UserContoroller {
 		return ResponseEntity.ok(response);
 	}
 
-	//회원탈퇴
+	/**
+	 * 로그아웃 API
+	 */
+	@LoginRequired
+	@PostMapping("/logout")
+	public ResponseEntity<MessageDto> loogut(@RequestBody UserDeleteRequestDto userDeleteRequestDto,
+		HttpServletRequest httpServletRequest)
+		throws IOException {
+
+		//콘솔 로그 확인
+		log.info("Password: {}", userDeleteRequestDto.getPassword());
+
+		//사용자 session 존재하면 가져오기 세션 없으면 null 반환
+		HttpSession session = httpServletRequest.getSession(false);
+
+		if (session != null) {
+			//세션 무효
+			session.invalidate();
+			log.info("세션 무효화 완료. 사용자 로그아웃 처리됐습니다.");
+		}
+
+		MessageDto response = new MessageDto("로그아웃이 완료되었습니다.");
+
+		return ResponseEntity.ok(response);
+	}
+
+	/**
+	 * 회원탈퇴 API
+	 */
 	@LoginRequired
 	@PatchMapping("/{userId}")
 	public ResponseEntity<MessageDto> userDelete(@PathVariable Long userId,
@@ -112,4 +144,5 @@ public class UserContoroller {
 
 		return ResponseEntity.ok(response);
 	}
+
 }
