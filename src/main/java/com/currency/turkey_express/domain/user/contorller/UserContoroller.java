@@ -103,7 +103,7 @@ public class UserContoroller {
 		log.info("Password: {}", userDeleteRequestDto.getPassword());
 
 		//사용자 session 존재하면 가져오기 세션 없으면 null 반환
-		HttpSession session = httpServletRequest.getSession();
+		HttpSession session = httpServletRequest.getSession(false);
 
 		if (session != null) {
 			//세션 무효
