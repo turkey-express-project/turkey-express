@@ -41,6 +41,8 @@ public class StoreController {
 		return new ResponseEntity<>(storeResponseDto, HttpStatus.OK);
 	}
 
+	/*TODO 즐겨찾기 많은 순으로 정렬*/
+	//가게 다건 조회(필터)
 	@GetMapping
 	public ResponseEntity<List<StoreResponseDto>> getAllStores(
 		@RequestParam(required = false) String name, @RequestParam(required = false) Category category,
