@@ -60,4 +60,9 @@ public class User extends BaseEntity {
 	public void updateUserStatus(UserStatus userStatus) {
 		this.userStatus = userStatus;
 	}
+
+	//유저 탈퇴일 변경
+	public void updateLeavedAt(LocalDateTime leavedAt) {
+		this.leavedAt = leavedAt;
+	}
 }
