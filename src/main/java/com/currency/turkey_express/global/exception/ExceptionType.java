@@ -27,8 +27,11 @@ public enum ExceptionType {
 	INVALID_RATING(HttpStatus.BAD_REQUEST, "별점은 1~5 사이의 숫자만 입력 가능합니다."),
 	DUPLICATE_REVIEW(HttpStatus.BAD_REQUEST, "리뷰는 주문 1건당 1회만 작성할 수 있습니다."),
 	ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "생성된 주문이 없습니다."),
-	JSON_PARSE_ERROR(HttpStatus.BAD_REQUEST, "장바구니 데이터에 문제가 있습니다.");
+	JSON_PARSE_ERROR(HttpStatus.BAD_REQUEST, "장바구니 데이터에 문제가 있습니다."),
 
+	EXPIRED_COUPON(HttpStatus.BAD_REQUEST, "해당 쿠폰은 만료되었습니다."),
+	COUPON_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 쿠폰을 찾을 수 없습니다."),
+	ALREADY_RECEIVED_COUPON(HttpStatus.BAD_REQUEST, "이미 수령한 쿠폰입니다.");
 
 	private final HttpStatus httpStatus;
 	private final String errorMessage;

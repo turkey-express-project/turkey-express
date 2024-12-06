@@ -1,4 +1,4 @@
-package com.currency.turkey_express.domain.user.contorller;
+package com.currency.turkey_express.domain.user.controller;
 
 import com.currency.turkey_express.domain.user.dto.LoginRequestDto;
 import com.currency.turkey_express.domain.user.dto.SignUpRequestDto;
@@ -34,6 +34,7 @@ public class UserController {
 	private final UserService userService;
 
 	/**
+	 * TODO 민감한 데이터 로그 지우기
 	 * 회원가입 API
 	 */
 	@PostMapping("/signup")
@@ -82,7 +83,7 @@ public class UserController {
 			throw new BusinessException(ExceptionType.ALREADY_LOGGED_IN);
 		}
 
-		//세션에 저장
+		//세션에 User 객체 저장
 		session.setAttribute(Const.LOGIN_USER, user);
 
 		MessageDto response = new MessageDto("로그인이 완료되었습니다.");
@@ -95,12 +96,8 @@ public class UserController {
 	 */
 	@LoginRequired
 	@PostMapping("/logout")
-	public ResponseEntity<MessageDto> loogut(@RequestBody UserDeleteRequestDto userDeleteRequestDto,
-		HttpServletRequest httpServletRequest)
+	public ResponseEntity<MessageDto> loogut(HttpServletRequest httpServletRequest)
 		throws IOException {
-
-		//콘솔 로그 확인
-		log.info("Password: {}", userDeleteRequestDto.getPassword());
 
 		//사용자 session 존재하면 가져오기 세션 없으면 null 반환
 		HttpSession session = httpServletRequest.getSession(false);
@@ -118,11 +115,12 @@ public class UserController {
 
 	/**
 	 * 회원탈퇴 API
+	 * TODO 탈퇴일 데이터 넣기
 	 */
 	@LoginRequired
 	@PatchMapping("/{userId}")
 	public ResponseEntity<MessageDto> userDelete(@PathVariable Long userId,
-		@RequestBody UserDeleteRequestDto userDeleteRequestDto,
+		UserDeleteRequestDto userDeleteRequestDto,
 		HttpServletRequest httpServletRequest
 	) throws IOException {
 
@@ -131,12 +129,10 @@ public class UserController {
 
 		//콘솔 로그 확인
 		log.info("userId - PathVariable: {}", userId);
-		log.info("Password: {}", userDeleteRequestDto.getPassword());
 		log.info("loginUserId - HttpServletRequest: {}", loginUserId);
 
 		UserResponseDto userResponseDto = userService.userDelete(
 			userId,
-			userDeleteRequestDto.getPassword(),
 			loginUserId
 		);
 
