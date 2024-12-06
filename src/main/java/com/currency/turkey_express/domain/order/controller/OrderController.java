@@ -1,7 +1,7 @@
 package com.currency.turkey_express.domain.order.controller;
 
 import com.currency.turkey_express.domain.cart.dto.CartCookieDto;
-import com.currency.turkey_express.domain.order.dto.CouponResponseDto;
+import com.currency.turkey_express.domain.coupon.dto.CouponResponseDto;
 import com.currency.turkey_express.domain.order.dto.OrderCreateDto;
 import com.currency.turkey_express.domain.order.dto.OrderRequestDto;
 import com.currency.turkey_express.domain.order.service.OrderService;
