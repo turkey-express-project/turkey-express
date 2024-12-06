@@ -5,9 +5,10 @@ import com.currency.turkey_express.domain.store.dto.StoreRequestDto;
 import com.currency.turkey_express.domain.store.dto.StoreResponseDto;
 import com.currency.turkey_express.domain.store.service.StoreService;
 import com.currency.turkey_express.global.annotation.LoginRequired;
-import com.currency.turkey_express.global.annotation.UserRoleRequired;
+import com.currency.turkey_express.global.annotation.UserRequired;
 import com.currency.turkey_express.global.base.entity.User;
 import com.currency.turkey_express.global.base.enums.store.Category;
+import com.currency.turkey_express.global.base.enums.user.UserType;
 import com.currency.turkey_express.global.constant.Const;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -33,7 +34,7 @@ public class StoreController {
 	private final StoreService storeService;
 
 	//가게 생성
-	@UserRoleRequired
+	@UserRequired(userType = UserType.OWNER)
 	@PostMapping
 	public ResponseEntity<StoreResponseDto> createStore(@RequestBody StoreRequestDto dto, HttpServletRequest request){
 		HttpSession session = request.getSession(false);
@@ -43,7 +44,7 @@ public class StoreController {
 	}
 
 	//가게 수정
-	@UserRoleRequired
+	@UserRequired(userType = UserType.OWNER)
 	@PatchMapping("/{store_id}")
 	public ResponseEntity<StoreResponseDto> updateStore(
 		@PathVariable Long store_id, @RequestBody StoreRequestDto dto, HttpServletRequest request
@@ -55,7 +56,7 @@ public class StoreController {
 	}
 
 	//가게 다건 조회(필터)
-	@LoginRequired
+	@UserRequired
 	@GetMapping
 	public ResponseEntity<List<StoreResponseDto>> getAllStores(
 		@RequestParam(required = false) String name, @RequestParam(required = false) Category category,
@@ -66,7 +67,7 @@ public class StoreController {
 	}
 
 	//가게 단건 조회
-	@LoginRequired
+	@UserRequired
 	@GetMapping("/{store_id}")
 	public ResponseEntity<StoreMenuResponseDto> getStore(@PathVariable Long store_id) {
 		StoreMenuResponseDto storeMenuResponseDto = storeService.findByStoreIdInMenus(store_id);
@@ -74,7 +75,7 @@ public class StoreController {
 	}
 
 	//가게 상태 폐업으로 변경
-	@UserRoleRequired
+	@UserRequired(userType = UserType.OWNER)
 	@DeleteMapping("/{store_id}")
 	public ResponseEntity<StoreResponseDto> closeStore(@PathVariable Long store_id, HttpServletRequest request) {
 		HttpSession session = request.getSession(false);
