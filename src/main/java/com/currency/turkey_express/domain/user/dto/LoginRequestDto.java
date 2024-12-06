@@ -10,7 +10,7 @@ public class LoginRequestDto {
 	private final String email; //이메일
 
 	@NotBlank
-	private final String password; //비밀번호
+	private String password; //비밀번호
 
 
 	public LoginRequestDto(String email, String password) {

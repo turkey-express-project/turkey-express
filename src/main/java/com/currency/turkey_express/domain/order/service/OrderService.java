@@ -1,12 +1,12 @@
 package com.currency.turkey_express.domain.order.service;
 
+import com.currency.turkey_express.domain.coupon.repository.CouponListRepository;
 import com.currency.turkey_express.domain.coupon.repository.CouponRepository;
 import com.currency.turkey_express.domain.order.dto.CouponResponseDto;
 import com.currency.turkey_express.domain.order.dto.OrderCreateDto;
-import com.currency.turkey_express.domain.order.repository.CouponListRepository;
 import com.currency.turkey_express.domain.order.repository.OrderMenuOptionRepository;
 import com.currency.turkey_express.domain.order.repository.OrderRepository;
-import com.currency.turkey_express.domain.order.repository.PointRepository;
+import com.currency.turkey_express.domain.point.repository.PointRepository;
 import com.currency.turkey_express.domain.store.repository.StoreRepository;
 import com.currency.turkey_express.domain.user.repository.UserRepository;
 import com.currency.turkey_express.global.base.entity.CouponList;
