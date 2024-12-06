@@ -22,7 +22,11 @@ public enum ExceptionType {
 	INVALID_MENU_DATA(HttpStatus.BAD_REQUEST, "메뉴 데이터가 잘못되었습니다."),
 	TOP_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "상위 카테고리를 찾을 수 없습니다."),
 	SUB_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "하위 카테고리를 찾을 수 없습니다."),
-	ALREADY_FULL_STORE(HttpStatus.BAD_REQUEST,"한 계정당 최대 3개의 가게를 운영할 수 있습니다.");
+	ALREADY_FULL_STORE(HttpStatus.BAD_REQUEST,"한 계정당 최대 3개의 가게를 운영할 수 있습니다."),
+	INVALID_RATING(HttpStatus.BAD_REQUEST, "별점은 1~5 사이의 숫자만 입력 가능합니다."),
+	DUPLICATE_REVIEW(HttpStatus.BAD_REQUEST, "리뷰는 주문 1건당 1회만 작성할 수 있습니다."),
+	ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "생성된 주문이 없습니다.");
+
 
 	private final HttpStatus httpStatus;
 	private final String errorMessage;
