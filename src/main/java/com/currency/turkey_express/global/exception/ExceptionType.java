@@ -16,14 +16,16 @@ public enum ExceptionType {
 	NOT_LOGIN(HttpStatus.UNAUTHORIZED, "사용자 세션이 존재하지 않습니다. 로그인을 해주세요."),
 	STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 가게를 찾을 수 없습니다."),
 	CLOSE_STORE(HttpStatus.NOT_FOUND, "해당 가게는 폐업되었습니다.."),
-	SELF_ADD_FAVORITE(HttpStatus.BAD_REQUEST,"자신의 가게는 즐겨찾기 할 수 없습니다."),
+	SELF_ADD_FAVORITE(HttpStatus.BAD_REQUEST, "자신의 가게는 즐겨찾기 할 수 없습니다."),
 	MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 메뉴를 찾을 수 없습니다."),
 	UNAUTHORIZED_ACCESS(HttpStatus.UNAUTHORIZED, "해당 작업을 수행할 권한이 없습니다."),
 	INVALID_MENU_DATA(HttpStatus.BAD_REQUEST, "메뉴 데이터가 잘못되었습니다."),
 	TOP_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "상위 카테고리를 찾을 수 없습니다."),
-	SUB_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "하위 카테고리를 찾을 수 없습니다.");
+	SUB_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "하위 카테고리를 찾을 수 없습니다."),
 
-
+	EXPIRED_COUPON(HttpStatus.BAD_REQUEST, "해당 쿠폰은 만료되었습니다."),
+	COUPON_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 쿠폰을 찾을 수 없습니다."),
+	ALREADY_RECEIVED_COUPON(HttpStatus.BAD_REQUEST, "이미 수령한 쿠폰입니다.");
 
 
 	private final HttpStatus httpStatus;

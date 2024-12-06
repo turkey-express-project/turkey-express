@@ -67,7 +67,7 @@ public class UserService {
 
 	//회원탈퇴
 	@Transactional
-	public UserResponseDto userDelete(Long userId, String password, Long loginUserId) {
+	public UserResponseDto userDelete(Long userId, Long loginUserId) {
 
 		//사용자 id 확인
 		User user = userRepository.findByIdOrElseThrow(userId);
@@ -80,11 +80,6 @@ public class UserService {
 		// 탈퇴 확인
 		if (user.getUserStatus().equals(UserStatus.DELETE)) {
 			throw new BusinessException(ExceptionType.DELETED_USER);
-		}
-
-		//비밀번호 일치하는지 확인
-		if (!passwordEncoder.matches(password, user.getPassword())) {
-			throw new BusinessException(ExceptionType.PASSWORD_NOT_MATCH);
 		}
 
 		//유저 상태 변경
