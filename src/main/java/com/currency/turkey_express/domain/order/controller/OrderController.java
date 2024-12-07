@@ -21,7 +21,6 @@ import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -37,7 +36,6 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 @RestController
 @RequestMapping("/orders")
 @RequiredArgsConstructor
-@Slf4j
 public class OrderController {
 
 	private final OrderService orderService;
@@ -86,9 +84,6 @@ public class OrderController {
 
 		// 쿠폰 할인 금액 계산
 		BigDecimal couponDiscountValue = calcCouponDiscountValue(couponResponseDto, totalPrice);
-
-		log.info("토탈 금액 {}", totalPrice);
-		log.info("쿠폰 할인 금액 {}", couponDiscountValue);
 
 		// 쿠폰, 포인트 합이 총액을 넘을 수 없다.
 		if (totalPrice.compareTo(
@@ -152,7 +147,6 @@ public class OrderController {
 				BigDecimal.valueOf(couponResponseDto.getDiscountValue())
 			).divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP);
 
-			log.info("계산 후 쿠폰 할인 금액 {}", couponDiscountValue.toString());
 		}
 
 		// couponDiscountValue 의 할인 금액 최대치 제한하기
