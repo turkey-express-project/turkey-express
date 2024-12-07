@@ -5,19 +5,22 @@ import com.currency.turkey_express.domain.user.dto.SignUpRequestDto;
 import com.currency.turkey_express.domain.user.dto.UserDeleteRequestDto;
 import com.currency.turkey_express.domain.user.dto.UserResponseDto;
 import com.currency.turkey_express.domain.user.service.UserService;
-import com.currency.turkey_express.global.annotation.LoginRequired;
+import com.currency.turkey_express.global.annotation.UserRequired;
 import com.currency.turkey_express.global.base.dto.MessageDto;
 import com.currency.turkey_express.global.base.entity.User;
+import com.currency.turkey_express.global.base.enums.user.UserType;
 import com.currency.turkey_express.global.constant.Const;
 import com.currency.turkey_express.global.exception.BusinessException;
 import com.currency.turkey_express.global.exception.ExceptionType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,17 +37,16 @@ public class UserController {
 	private final UserService userService;
 
 	/**
-	 * TODO 민감한 데이터 로그 지우기
 	 * 회원가입 API
 	 */
 	@PostMapping("/signup")
-	public ResponseEntity<UserResponseDto> signUp(@RequestBody SignUpRequestDto signUpRequestDto)
+	public ResponseEntity<UserResponseDto> signUp(
+		@Valid @RequestBody SignUpRequestDto signUpRequestDto)
 		throws IOException {
 
 		//콘솔 로그 확인
 		log.info("Email: {}", signUpRequestDto.getEmail());
 		log.info("UserNickname: {}", signUpRequestDto.getUserNickname());
-		log.info("Password: {}", signUpRequestDto.getPassword());
 		log.info("UserType: {}", signUpRequestDto.getUserType());
 
 		UserResponseDto userResponseDto = userService.signUp(
@@ -59,15 +61,15 @@ public class UserController {
 
 	/**
 	 * 로그인 API
+	 * - 로그인시 totalPoint 자동으로 업데이트
 	 */
 	@PostMapping("/login")
-	public ResponseEntity<MessageDto> login(@RequestBody LoginRequestDto loginRequestDto,
+	public ResponseEntity<MessageDto> login(@Valid @RequestBody LoginRequestDto loginRequestDto,
 		HttpServletRequest httpServletRequest)
 		throws IOException {
 
 		//콘솔 로그 확인
 		log.info("Email: {}", loginRequestDto.getEmail());
-		log.info("Password: {}", loginRequestDto.getPassword());
 
 		User user = userService.login(
 			loginRequestDto.getEmail(),
@@ -94,7 +96,7 @@ public class UserController {
 	/**
 	 * 로그아웃 API
 	 */
-	@LoginRequired
+	@UserRequired
 	@PostMapping("/logout")
 	public ResponseEntity<MessageDto> loogut(HttpServletRequest httpServletRequest)
 		throws IOException {
@@ -115,12 +117,11 @@ public class UserController {
 
 	/**
 	 * 회원탈퇴 API
-	 * TODO 탈퇴일 데이터 넣기
 	 */
-	@LoginRequired
+	@UserRequired
 	@PatchMapping("/{userId}")
 	public ResponseEntity<MessageDto> userDelete(@PathVariable Long userId,
-		UserDeleteRequestDto userDeleteRequestDto,
+		@Valid @RequestBody UserDeleteRequestDto userDeleteRequestDto,
 		HttpServletRequest httpServletRequest
 	) throws IOException {
 
@@ -133,12 +134,34 @@ public class UserController {
 
 		UserResponseDto userResponseDto = userService.userDelete(
 			userId,
-			loginUserId
+			loginUserId,
+			userDeleteRequestDto
 		);
 
-		MessageDto response = new MessageDto("회원 탈퇴 완료되었습니다.");
+		MessageDto response = new MessageDto("회원탈퇴 완료되었습니다.");
 
 		return ResponseEntity.ok(response);
 	}
 
+	/**
+	 * 유저 단건 조회 API
+	 */
+	@UserRequired(vaild = UserType.CUSTOMER)
+	@GetMapping("/{userId}")
+	public ResponseEntity<UserResponseDto> getUser(@PathVariable Long userId,
+		HttpServletRequest httpServletRequest) {
+
+		//인터셉터에서 로그인된 사용자 ID 가져오기
+		Long loginUserId = (Long) httpServletRequest.getAttribute("loginUserId");
+
+		//콘솔 로그 확인
+		log.info("userId - PathVariable: {}", userId);
+		log.info("loginUserId - HttpServletRequest: {}", loginUserId);
+
+		UserResponseDto userResponseDto = userService.getUser(
+			userId,
+			loginUserId
+		);
+		return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
+	}
 }
