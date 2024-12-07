@@ -28,7 +28,7 @@ public class CouponListController {
 	private final CouponListService couponListService;
 
 	/**
-	 * 유저별 쿠폰 수령 API
+	 * 고객별 쿠폰 수령 API
 	 */
 	@UserRequired(vaild = UserType.CUSTOMER)
 	@PostMapping
@@ -54,7 +54,7 @@ public class CouponListController {
 	}
 
 	/**
-	 * 유저별 쿠폰 전체 목록 조회 API
+	 * 고객별 쿠폰 전체 목록 조회 API
 	 */
 	@UserRequired(vaild = UserType.CUSTOMER)
 	@GetMapping
@@ -77,8 +77,4 @@ public class CouponListController {
 		return new ResponseEntity<>(couponListResponseDto, HttpStatus.OK);
 	}
 
-	/**
-	 * 쿠폰 만료날짜가 되면 쿠폰 상태 변경 API
-	 */
-	
 }

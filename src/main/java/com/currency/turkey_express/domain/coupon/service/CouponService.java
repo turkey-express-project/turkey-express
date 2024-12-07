@@ -6,6 +6,8 @@ import com.currency.turkey_express.global.base.entity.Coupon;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +18,8 @@ public class CouponService {
 	private final CouponRepository couponRepository;
 
 	/**
-	 * 쿠폰 등록 API 쿠폰 테이블에 쿠폰 데이터 저장
+	 * 쿠폰 등록 API
+	 * - 관리자 전용
 	 */
 	@Transactional
 	public CouponAllResponseDto createCoupon(String couponName, Integer discountValue,
@@ -27,6 +30,24 @@ public class CouponService {
 		Coupon saveCoupon = couponRepository.save(coupon);
 
 		return CouponAllResponseDto.toDto(saveCoupon);
+	}
+
+	/**
+	 * 생성된 쿠폰 전체 조회
+	 * - 관리자 전용
+	 */
+	public List<CouponAllResponseDto> findAllCoupons() {
+
+		//쿠폰 전체 조회
+		List<Coupon> coupons = couponRepository.findAll();
+
+		List<CouponAllResponseDto> couponAllResponseDtoList = new ArrayList<>();
+
+		for (Coupon couponList : coupons) {
+			CouponAllResponseDto couponAllResponseDto = CouponAllResponseDto.toDto(couponList);
+			couponAllResponseDtoList.add(couponAllResponseDto);
+		}
+		return couponAllResponseDtoList;
 	}
 
 }

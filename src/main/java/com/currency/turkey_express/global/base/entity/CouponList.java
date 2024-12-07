@@ -45,9 +45,13 @@ public class CouponList {
 		this.status = status;
 	}
 
-	public void setStatus(CouponStatus status) {
+	//쿠폰 상태 업데이트
+	public void updateCouponStatus(CouponStatus status) {
 		this.status = status;
 	}
 
+	public void setStatus(CouponStatus status) {
+		this.status = status;
+	}
 
 }

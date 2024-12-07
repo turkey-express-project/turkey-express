@@ -17,7 +17,6 @@ public class CouponResponseDto {
 
 	private BigDecimal maxDiscount; //쿠폰 최대 할인금액
 	
-
 	public CouponResponseDto(Coupon coupon) {
 		this.id = coupon.getId();
 		this.discountValue = coupon.getDiscountValue();

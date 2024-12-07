@@ -10,17 +10,21 @@ import com.currency.turkey_express.global.base.entity.User;
 import com.currency.turkey_express.global.base.enums.coupon.CouponStatus;
 import com.currency.turkey_express.global.exception.BusinessException;
 import com.currency.turkey_express.global.exception.ExceptionType;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@EnableScheduling
 public class CouponListService {
 
 	private final CouponRepository couponRepository;
@@ -28,7 +32,7 @@ public class CouponListService {
 	private final UserRepository userRepository;
 
 	/**
-	 * 쿠폰 수령(유저별) API 쿠폰 리스트 테이블에 데이터 저장
+	 * 고객별 쿠폰 수령 API
 	 */
 	@Transactional
 	public CouponListResponseDto receivedCoupon(Long userId, Long couponId,
@@ -72,7 +76,7 @@ public class CouponListService {
 	}
 
 	/**
-	 * 쿠폰 목록(유저별) API 쿠폰 리스트 테이블 목록 조회
+	 * 고객별 쿠폰 목록 조회 API
 	 */
 	public List<CouponListResponseDto> findAllCouponList(Long userId,
 		Long loginUserId) {
@@ -98,4 +102,27 @@ public class CouponListService {
 		return couponListResponseDtoList;
 	}
 
+	/**
+	 * 쿠폰 만료날짜가 되면 쿠폰 상태 변경 API
+	 * - 5분마다 업데이트 실행(test를 위해 5분으로 설정)
+	 * - @Scheduled 초 분 시 일 월 요일
+	 */
+	@Scheduled(cron = "0 */5 * * * *")
+	@Transactional
+	public void updateCouponStatus() {
+
+		//현재 시간 가져오기
+		LocalDateTime now = LocalDateTime.now();
+
+		//만요일이 지나도 상태가 OK인 것을 찾기
+		List<CouponList> okCoupons = couponListRepository.findByCouponEndDateAfterAndStatusOk();
+
+		//OK -> EXPIRED 변경
+		for (CouponList coupon : okCoupons) {
+			coupon.updateCouponStatus(CouponStatus.EXPIRED);
+		}
+
+		// 콘솔 로그 확인
+		log.info("{}개의 쿠폰이 만료되어 상태를 EXPIRED 변경 완료", okCoupons.size());
+	}
 }
