@@ -66,8 +66,8 @@ public class User extends BaseEntity {
 		this.leavedAt = leavedAt;
 	}
 
-
 	public void updateTotalPoint(BigDecimal totalPoint) {
 		this.totalPoint = totalPoint;
 	}
+
 }

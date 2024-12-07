@@ -12,8 +12,8 @@ public interface PointRepository extends JpaRepository<Point, Long> {
 
 	List<Point> findAllByUserId(Long userId);
 
-	//합산한 포인트 반환
-	@Query("SELECT SUM(p.point) "
+	//합산한 포인트가 null일 경우 0 반환
+	@Query("SELECT COALESCE(SUM(p.point), 0) "
 		+ "FROM Point p "
 		+ "WHERE p.user.id = ?1")
 	BigDecimal getTotalPointsByUserId(Long userId);
