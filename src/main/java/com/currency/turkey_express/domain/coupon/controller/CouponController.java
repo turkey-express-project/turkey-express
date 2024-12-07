@@ -4,6 +4,8 @@ package com.currency.turkey_express.domain.coupon.controller;
 import com.currency.turkey_express.domain.coupon.dto.CouponAllResponseDto;
 import com.currency.turkey_express.domain.coupon.dto.CouponRequestDto;
 import com.currency.turkey_express.domain.coupon.service.CouponService;
+import com.currency.turkey_express.global.annotation.UserRequired;
+import jakarta.validation.Valid;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,24 +25,25 @@ public class CouponController {
 	private final CouponService couponService;
 
 	/**
-	 * TODO 민감한 데이터 로그 지우기
-	 * 기능 구현 완료 후 로그인 세션 추가
-	 * 쿠폰 등록 API 쿠폰 테이블에 쿠폰 데이터 저장
+	 * 원래는 관리자만 쿠폰을 등록할 수 있다 쿠폰 등록 API 쿠폰 테이블에 쿠폰 데이터 저장
 	 */
+	@UserRequired
 	@PostMapping
-	public ResponseEntity<CouponAllResponseDto> createCoupon(
-		@RequestBody CouponRequestDto couponRequestDto)
+	public ResponseEntity<CouponAllResponseDto> createCoupon(@Valid
+	@RequestBody CouponRequestDto couponRequestDto)
 		throws IOException {
 
 		//콘솔 로그 확인
 		log.info("CouponName: {}", couponRequestDto.getCouponName());
 		log.info("DiscountValue: {}", couponRequestDto.getDiscountValue());
 		log.info("MaxDiscount: {}", couponRequestDto.getMaxDiscount());
+		log.info("getEndDate: {}", couponRequestDto.getEndDate());
 
 		CouponAllResponseDto couponAllResponseDto = couponService.createCoupon(
 			couponRequestDto.getCouponName(),
 			couponRequestDto.getDiscountValue(),
-			couponRequestDto.getMaxDiscount()
+			couponRequestDto.getMaxDiscount(),
+			couponRequestDto.getEndDate()
 		);
 
 		return new ResponseEntity<>(couponAllResponseDto, HttpStatus.CREATED);

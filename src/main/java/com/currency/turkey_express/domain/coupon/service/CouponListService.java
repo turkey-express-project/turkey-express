@@ -10,10 +10,13 @@ import com.currency.turkey_express.global.base.entity.User;
 import com.currency.turkey_express.global.base.enums.coupon.CouponStatus;
 import com.currency.turkey_express.global.exception.BusinessException;
 import com.currency.turkey_express.global.exception.ExceptionType;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -27,6 +30,7 @@ public class CouponListService {
 	/**
 	 * 쿠폰 수령(유저별) API 쿠폰 리스트 테이블에 데이터 저장
 	 */
+	@Transactional
 	public CouponListResponseDto receivedCoupon(Long userId, Long couponId,
 		Long loginUserId) {
 
@@ -52,8 +56,8 @@ public class CouponListService {
 			if (couponList.get().getStatus() != CouponStatus.OK) {
 				throw new BusinessException(ExceptionType.EXPIRED_COUPON);
 			}
-		} else {
-			//값이 존재하지 않으면
+
+			//값이 존재하는 경우 -> 이미 존재하는 쿠폰 예외처리
 			throw new BusinessException(ExceptionType.ALREADY_RECEIVED_COUPON);
 		}
 
@@ -66,4 +70,32 @@ public class CouponListService {
 
 		return CouponListResponseDto.toDto(couponList.get());
 	}
+
+	/**
+	 * 쿠폰 목록(유저별) API 쿠폰 리스트 테이블 목록 조회
+	 */
+	public List<CouponListResponseDto> findAllCouponList(Long userId,
+		Long loginUserId) {
+		//사용자 id 확인
+		User user = userRepository.findByIdOrElseThrow(userId);
+
+		//로그인한 사용자랑 ID가 일치하는지 확인
+		if (!userId.equals(loginUserId)) {
+			throw new BusinessException(ExceptionType.USER_NOT_MATCH);
+		}
+
+		//특정 유저 쿠폰 리스트 조회
+		List<CouponList> couponList = couponListRepository.findAllByUserId(userId);
+
+		List<CouponListResponseDto> couponListResponseDtoList = new ArrayList<>();
+
+		for (CouponList newCouponList : couponList) {
+			//CouponList -> CouponListResponseDto 객체로 변환
+			CouponListResponseDto couponListResponseDto = CouponListResponseDto.toDto(
+				newCouponList);
+			couponListResponseDtoList.add(couponListResponseDto);
+		}
+		return couponListResponseDtoList;
+	}
+
 }

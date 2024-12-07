@@ -5,6 +5,7 @@ import com.currency.turkey_express.domain.coupon.repository.CouponRepository;
 import com.currency.turkey_express.global.base.entity.Coupon;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +20,8 @@ public class CouponService {
 	 */
 	@Transactional
 	public CouponAllResponseDto createCoupon(String couponName, Integer discountValue,
-		BigDecimal maxDiscount) {
-		Coupon coupon = new Coupon(couponName, discountValue, maxDiscount);
+		BigDecimal maxDiscount, LocalDateTime endDate) {
+		Coupon coupon = new Coupon(couponName, discountValue, maxDiscount, endDate);
 
 		//쿠폰 저장
 		Coupon saveCoupon = couponRepository.save(coupon);
