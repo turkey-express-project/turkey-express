@@ -18,6 +18,7 @@ import java.sql.Time;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Table(name = "store")
 @Entity
@@ -49,6 +50,8 @@ public class Store extends BaseEntity {
 	@Column(nullable = false)
 	private BigDecimal orderAmount;
 
+	private String imageKeyValue;
+
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
@@ -79,5 +82,9 @@ public class Store extends BaseEntity {
 
 	public void setStoreStatusClose() {
 		this.storeStatus = StoreStatus.CLOSE;
+	}
+
+	public void setImageKeyValue(String imageKeyValue){
+		this.imageKeyValue = imageKeyValue;
 	}
 }

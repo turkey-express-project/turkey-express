@@ -17,8 +17,9 @@ public class StoreMenuResponseDto {
 	private Category category;
 	private Long favoriteCounts;
 	private List<MenuInStoreResponseDto> menus;
+	private String base64Image;
 
-	public StoreMenuResponseDto(Store store, Long favoriteCounts, List<MenuInStoreResponseDto> menus) {
+	public StoreMenuResponseDto(Store store, Long favoriteCounts, List<MenuInStoreResponseDto> menus, String base64Image) {
 		this.storeName = store.getStoreName();
 		this.openTime = store.getOpenTime();
 		this.closeTime = store.getCloseTime();
@@ -26,5 +27,6 @@ public class StoreMenuResponseDto {
 		this.category = store.getCategory();
 		this.favoriteCounts = favoriteCounts;
 		this.menus = menus;
+		this.base64Image = base64Image;
 	}
 }

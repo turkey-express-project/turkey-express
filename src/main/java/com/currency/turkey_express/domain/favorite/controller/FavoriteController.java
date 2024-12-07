@@ -2,7 +2,6 @@ package com.currency.turkey_express.domain.favorite.controller;
 
 import com.currency.turkey_express.domain.favorite.dto.FavoriteResponseDto;
 import com.currency.turkey_express.domain.favorite.service.FavoriteService;
-import com.currency.turkey_express.global.annotation.LoginRequired;
 import com.currency.turkey_express.global.annotation.UserRequired;
 import com.currency.turkey_express.global.base.dto.MessageDto;
 import com.currency.turkey_express.global.base.entity.User;

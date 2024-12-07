@@ -6,6 +6,7 @@ import com.currency.turkey_express.global.base.enums.store.StoreStatus;
 import java.math.BigDecimal;
 import java.sql.Time;
 import lombok.Getter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 public class StoreResponseDto {

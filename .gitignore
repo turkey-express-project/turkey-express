@@ -39,3 +39,7 @@ out/
 
 ### env ###
 .env
+
+### S3 ###
+/application-private.properties
+

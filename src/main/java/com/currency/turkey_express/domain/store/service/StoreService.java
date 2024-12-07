@@ -14,10 +14,14 @@ import com.currency.turkey_express.global.base.enums.store.Category;
 import com.currency.turkey_express.global.base.enums.user.UserStatus;
 import com.currency.turkey_express.global.exception.BusinessException;
 import com.currency.turkey_express.global.exception.ExceptionType;
+import com.currency.turkey_express.global.service.S3Service;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +30,7 @@ public class StoreService {
 	private final UserRepository userRepository;
 	private final MenuRepository menuRepository;
 	private final FavoriteRepository favoriteRepository;
+	private final S3Service s3Service;
 
 	/*
 	* 가게 생성 api
@@ -40,12 +45,28 @@ public class StoreService {
 		);
 		User user = findUserOrElseThrow(userId);
 
+		// 파일이 없을 경우
+		if (dto.getMultipartFile() == null || dto.getMultipartFile().isEmpty()) {
+			store.setUser(user);
+			isFullStores(user);  // stores 갯수 제한 검사 등
+			storeRepository.save(store);
+			return new StoreResponseDto(store);
+		}
+
+		try{
+			String imageKey = s3Service.uploadFile(dto.getMultipartFile());
+			store.setImageKeyValue(imageKey);
+		}catch (IOException e){
+			throw new RuntimeException("파일 업로드 중 오류가 발생했습니다.");
+		}
+
 		store.setUser(user);
 		isFullStores(user);
 		storeRepository.save(store);
 		return new StoreResponseDto(store);
 	}
 
+	//TODO 코드 구조 개선 필요
 	/*
 	 * 가게 수정 api
 	 * - 트랜잭션
@@ -59,8 +80,31 @@ public class StoreService {
 		User user = findUserOrElseThrow(userId);
 		Store store = findStoreOrElseThrow(storeId);
 
+		//본인의 가게인지 검증
 		if(!store.getUser().getId().equals(userId)){
 			throw new BusinessException(ExceptionType.UNAUTHORIZED_ACCESS);
+		}
+
+		// 파일이 없을 경우
+		if (dto.getMultipartFile() == null || dto.getMultipartFile().isEmpty()) {
+			store.setStore(dto);
+			store.setUser(user);
+			storeRepository.save(store);
+			return new StoreResponseDto(store);
+		}
+
+		//기존 이미지가 존재할 시 aws에서 삭제
+		if (!store.getImageKeyValue().isEmpty()){
+			s3Service.deleteImageForStore(storeId);
+		}
+
+		try {
+			//새 이미지를 aws에 저장하고 키값을 받아옴
+			String newImageKey = s3Service.uploadFile(dto.getMultipartFile());
+			//받아온 키 값을 dto에 새로 저장
+			store.setImageKeyValue(newImageKey);
+		}catch (IOException e){
+			throw new RuntimeException("파일 업로드 중 오류가 발생했습니다.");
 		}
 
 		store.setStore(dto);
@@ -101,8 +145,19 @@ public class StoreService {
 		//menuRepository 가게에 존재하는 메뉴 리스트를 가져옴
 		List<MenuInStoreResponseDto> menuInStoreResponsDtoList = menuRepository.findAllByStoreId(storeId);
 
+		String base64Image = null;
+		if (store.getImageKeyValue() != null && !store.getImageKeyValue().isEmpty()) {
+			try {
+				InputStream inputStream = s3Service.getImage(store.getImageKeyValue());
+				byte[] imageBytes = inputStream.readAllBytes();
+				base64Image = s3Service.encodingImageToBase64(imageBytes);
+			}catch (IOException e){
+				throw new RuntimeException("이미지 불러오기 실패");
+			}
+		}
+
 		//위의 정보를 통해 반환 dto 생성
-		return new StoreMenuResponseDto(store, favoriteCount, menuInStoreResponsDtoList);
+		return new StoreMenuResponseDto(store, favoriteCount, menuInStoreResponsDtoList, base64Image);
 	}
 
 	/*
