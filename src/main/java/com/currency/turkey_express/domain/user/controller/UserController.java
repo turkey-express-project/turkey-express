@@ -8,6 +8,7 @@ import com.currency.turkey_express.domain.user.service.UserService;
 import com.currency.turkey_express.global.annotation.UserRequired;
 import com.currency.turkey_express.global.base.dto.MessageDto;
 import com.currency.turkey_express.global.base.entity.User;
+import com.currency.turkey_express.global.base.enums.user.UserType;
 import com.currency.turkey_express.global.constant.Const;
 import com.currency.turkey_express.global.exception.BusinessException;
 import com.currency.turkey_express.global.exception.ExceptionType;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -59,6 +61,7 @@ public class UserController {
 
 	/**
 	 * 로그인 API
+	 * - 로그인시 totalPoint 자동으로 업데이트
 	 */
 	@PostMapping("/login")
 	public ResponseEntity<MessageDto> login(@Valid @RequestBody LoginRequestDto loginRequestDto,
@@ -140,4 +143,25 @@ public class UserController {
 		return ResponseEntity.ok(response);
 	}
 
+	/**
+	 * 유저 단건 조회 API
+	 */
+	@UserRequired(vaild = UserType.CUSTOMER)
+	@GetMapping("/{userId}")
+	public ResponseEntity<UserResponseDto> getUser(@PathVariable Long userId,
+		HttpServletRequest httpServletRequest) {
+
+		//인터셉터에서 로그인된 사용자 ID 가져오기
+		Long loginUserId = (Long) httpServletRequest.getAttribute("loginUserId");
+
+		//콘솔 로그 확인
+		log.info("userId - PathVariable: {}", userId);
+		log.info("loginUserId - HttpServletRequest: {}", loginUserId);
+
+		UserResponseDto userResponseDto = userService.getUser(
+			userId,
+			loginUserId
+		);
+		return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
+	}
 }

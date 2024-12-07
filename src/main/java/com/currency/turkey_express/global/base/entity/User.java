@@ -45,7 +45,7 @@ public class User extends BaseEntity {
 	private LocalDateTime leavedAt; //탈퇴일
 
 	@Column(nullable = false)
-	private BigDecimal totalPoint = new BigDecimal(0); //총합 포인트
+	private BigDecimal totalPoint = BigDecimal.ZERO; //총합 포인트
 
 	public User(String email, String userNickname, String password, UserType userType,
 		UserStatus userStatus) {
@@ -64,5 +64,10 @@ public class User extends BaseEntity {
 	//유저 탈퇴일 변경
 	public void updateLeavedAt(LocalDateTime leavedAt) {
 		this.leavedAt = leavedAt;
+	}
+
+
+	public void updateTotalPoint(BigDecimal totalPoint) {
+		this.totalPoint = totalPoint;
 	}
 }
