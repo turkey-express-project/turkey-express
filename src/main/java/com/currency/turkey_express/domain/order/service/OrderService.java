@@ -23,7 +23,9 @@ import com.currency.turkey_express.global.base.enums.user.UserType;
 import com.currency.turkey_express.global.exception.BusinessException;
 import com.currency.turkey_express.global.exception.ExceptionType;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Time;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -123,7 +125,7 @@ public class OrderService {
 			});
 	}
 
-	public void subtrackPoint(Long userId, BigDecimal pointPrice) {
+	public void subtractPoint(Long userId, BigDecimal pointPrice) {
 
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new NoExistException("존재하지 않는 유저입니다"));
@@ -145,12 +147,10 @@ public class OrderService {
 
 	public void processNext(Long orderId, Long userId) {
 
+		// 요청 검증 단계
+
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new BusinessException(ExceptionType.USER_NOT_FOUND));
-
-		if (!user.getUserType().equals(UserType.OWNER)) {
-			throw new BusinessException(ExceptionType.UNAUTHORIZED_ACCESS);
-		}
 
 		Order order = orderRepository.findById(orderId)
 			.orElseThrow(() -> new NoExistException("존재하지 않는 주문입니다"));
@@ -171,11 +171,45 @@ public class OrderService {
 			throw new IllegalArgumentException("이미 완료된 주문입니다");
 		}
 
-		order.setOrderStatus(orderStatuses[nextOrderIdx]);
+		// 주문 목록 가져오기
+		List<Order> orders = orderRepository.findByOrderGroupIdentifier(
+			order.getOrderGroupIdentifier());
 
+		// 주문 목록들 상태 업데이트
+		orders.stream()
+			.forEach(o -> {
+				o.setOrderStatus(orderStatuses[nextOrderIdx]);
+			});
+
+		// 주문 완료 상태 일 때, 포인트 적립
+
+		if (!orderStatuses[nextOrderIdx].equals(OrderStatus.DELIVERY_COMPLETE)) {
+			return;
+		}
+
+		BigDecimal ordersTotalPrice = orders.stream()
+			.map(o -> {
+				BigDecimal menuPrice = o.getMenuPrice().subtract(o.getPointPrice())
+					.subtract(o.getCouponPrice());
+
+				BigDecimal menuOptionPrice = o.getOrderMenuOptions().stream()
+					.map(OrderMenuOption::getOptionPrice)
+					.reduce(BigDecimal.ZERO, BigDecimal::add);
+				return menuPrice.add(menuOptionPrice);
+			})
+			.reduce(BigDecimal.ZERO, BigDecimal::add);
+
+		BigDecimal addedPointPrice =
+			ordersTotalPrice.divide(BigDecimal.valueOf(3), RoundingMode.DOWN);
+
+		pointRepository.save(new Point(
+			user, addedPointPrice
+		));
 	}
 
 	public void cancleOrder(Long orderId, Long userId, CancleRequestDto cancleRequestDto) {
+
+		// 요청 검증 단계
 
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new BusinessException(ExceptionType.USER_NOT_FOUND));
@@ -199,7 +233,27 @@ public class OrderService {
 			throw new IllegalArgumentException("진행되는 주문을 거절할 수 없습니다");
 		}
 
-		order.setCancleComment(cancleRequestDto.getComment());
-		order.setOrderStatus(OrderStatus.ORDER_REJECTED);
+		// 주문 목록 가져오기
+		List<Order> orders = orderRepository.findByOrderGroupIdentifier(
+			order.getOrderGroupIdentifier());
+
+		// 주문 목록들 상태 업데이트
+		orders.forEach(o -> {
+			o.setOrderStatus(OrderStatus.ORDER_REJECTED);
+			order.setCancleComment(cancleRequestDto.getComment());
+		});
+
+		BigDecimal orderPointPrice = orders.stream()
+			.map(Order::getPointPrice
+			)
+			.reduce(BigDecimal.ZERO, BigDecimal::add);
+
+		pointRepository.save(new Point(
+			user, orderPointPrice
+		));
+	}
+
+	public BigDecimal getCustomerPointTotal(Long userId) {
+		return pointRepository.getTotalPointsByUserId(userId);
 	}
 }
