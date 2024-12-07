@@ -202,4 +202,8 @@ public class OrderService {
 		order.setCancleComment(cancleRequestDto.getComment());
 		order.setOrderStatus(OrderStatus.ORDER_REJECTED);
 	}
+
+	public BigDecimal getCustomerPointTotal(Long userId) {
+		return pointRepository.getTotalPointsByUserId(userId);
+	}
 }
