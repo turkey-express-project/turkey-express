@@ -95,7 +95,7 @@ public class OrderController {
 
 		// 주문 완료 후 실제 포인트 차감, 포인트가 0보다 클 때
 		if (orderRequestDto.getPointPrice().compareTo(BigDecimal.ZERO) > 0) {
-			orderService.subtrackPoint(
+			orderService.subtractPoint(
 				userId,
 				orderRequestDto.getPointPrice()
 			);
@@ -155,7 +155,7 @@ public class OrderController {
 	) {
 		//주문 접근해서 다음 상태로 변경
 		orderService.processNext(orderId, userId);
-
+		
 		return new ResponseEntity<>(new MessageDto("다음 주문상태로 넘어갑니다"), HttpStatus.OK);
 	}
 
