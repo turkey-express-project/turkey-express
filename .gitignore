@@ -41,5 +41,4 @@ out/
 .env
 
 ### S3 ###
-/application-private.properties
 
