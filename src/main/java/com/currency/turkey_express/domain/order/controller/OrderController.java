@@ -10,6 +10,7 @@ import com.currency.turkey_express.domain.order.service.OrderService;
 import com.currency.turkey_express.domain.user.service.UserService;
 import com.currency.turkey_express.global.annotation.UserRequired;
 import com.currency.turkey_express.global.base.dto.MessageDto;
+import com.currency.turkey_express.global.base.enums.order.OrderStatus;
 import com.currency.turkey_express.global.base.enums.user.UserType;
 import com.currency.turkey_express.global.constant.Const;
 import com.currency.turkey_express.global.exception.ExceptionResponse;
@@ -154,9 +155,10 @@ public class OrderController {
 		@PathVariable Long orderId
 	) {
 		//주문 접근해서 다음 상태로 변경
-		orderService.processNext(orderId, userId);
-		
-		return new ResponseEntity<>(new MessageDto("다음 주문상태로 넘어갑니다"), HttpStatus.OK);
+		OrderStatus orderStatus = orderService.processNext(orderId, userId);
+
+		return new ResponseEntity<>(new MessageDto("주문 상태 : " + orderStatus.toString()),
+			HttpStatus.OK);
 	}
 
 	/**
