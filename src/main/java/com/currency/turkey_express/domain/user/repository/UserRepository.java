@@ -23,5 +23,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
 		return findByEmail(email).orElseThrow(
 			() -> new BusinessException(ExceptionType.USER_NOT_FOUND));
 	}
-
 }

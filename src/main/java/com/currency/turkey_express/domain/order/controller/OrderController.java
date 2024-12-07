@@ -155,7 +155,6 @@ public class OrderController {
 		return couponDiscountValue;
 	}
 
-
 	/**
 	 * 주문 진행 API
 	 *
@@ -196,7 +195,6 @@ public class OrderController {
 
 		return new ResponseEntity<>(new MessageDto("주문이 취소되었습니다."), HttpStatus.OK);
 	}
-
 
 	@ExceptionHandler({NoExistException.class})
 	public ResponseEntity<ExceptionResponse> noExistExceptionHandleException(Exception e) {

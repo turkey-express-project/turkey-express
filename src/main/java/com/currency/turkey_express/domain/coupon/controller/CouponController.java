@@ -5,6 +5,7 @@ import com.currency.turkey_express.domain.coupon.dto.CouponAllResponseDto;
 import com.currency.turkey_express.domain.coupon.dto.CouponRequestDto;
 import com.currency.turkey_express.domain.coupon.service.CouponService;
 import com.currency.turkey_express.global.annotation.UserRequired;
+import com.currency.turkey_express.global.base.enums.user.UserType;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +26,9 @@ public class CouponController {
 	private final CouponService couponService;
 
 	/**
-	 * 원래는 관리자만 쿠폰을 등록할 수 있다 쿠폰 등록 API 쿠폰 테이블에 쿠폰 데이터 저장
+	 * 쿠폰 등록 API - 관리자 전용
 	 */
-	@UserRequired
+	@UserRequired(vaild = UserType.ADMIN)
 	@PostMapping
 	public ResponseEntity<CouponAllResponseDto> createCoupon(@Valid
 	@RequestBody CouponRequestDto couponRequestDto)
@@ -50,7 +51,7 @@ public class CouponController {
 	}
 
 	/**
-	 * 쿠폰 조회 API 쿠폰 테이블에 저장된 쿠폰 데이터 조회
+	 * 생성된 쿠폰 전체 조회 API
 	 */
 
 

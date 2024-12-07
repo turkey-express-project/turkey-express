@@ -11,6 +11,7 @@ import com.currency.turkey_express.domain.user.repository.UserRepository;
 import com.currency.turkey_express.global.base.entity.Store;
 import com.currency.turkey_express.global.base.entity.User;
 import com.currency.turkey_express.global.base.enums.store.Category;
+import com.currency.turkey_express.global.base.enums.store.StoreStatus;
 import com.currency.turkey_express.global.base.enums.user.UserStatus;
 import com.currency.turkey_express.global.exception.BusinessException;
 import com.currency.turkey_express.global.exception.ExceptionType;
@@ -22,21 +23,23 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class StoreService {
+
 	private final StoreRepository storeRepository;
 	private final UserRepository userRepository;
 	private final MenuRepository menuRepository;
 	private final FavoriteRepository favoriteRepository;
 
 	/*
-	* 가게 생성 api
-	* - 트랜잭션
-	* - 예외처리 :
-	*   1. 유저 존재, 유저 탈퇴 여부 확인
-	*/
+	 * 가게 생성 api
+	 * - 트랜잭션
+	 * - 예외처리 :
+	 *   1. 유저 존재, 유저 탈퇴 여부 확인
+	 */
 	@Transactional
 	public StoreResponseDto createStore(StoreRequestDto dto, Long userId) {
 		Store store = new Store(
-			dto.getStoreName(),dto.getOpenTime(),dto.getCloseTime(),dto.getCategory(),dto.getOrderAmount()
+			dto.getStoreName(), dto.getOpenTime(), dto.getCloseTime(), dto.getCategory(),
+			dto.getOrderAmount()
 		);
 		User user = findUserOrElseThrow(userId);
 
@@ -59,7 +62,7 @@ public class StoreService {
 		User user = findUserOrElseThrow(userId);
 		Store store = findStoreOrElseThrow(storeId);
 
-		if(!store.getUser().getId().equals(userId)){
+		if (!store.getUser().getId().equals(userId)) {
 			throw new BusinessException(ExceptionType.UNAUTHORIZED_ACCESS);
 		}
 
@@ -75,14 +78,15 @@ public class StoreService {
 	 * - 예외처리 :
 	 *   1. 가게 목록이 null 일 경우 확인
 	 */
-	public List<StoreResponseDto> findByFilters(String name, Category category, Long minReviews, Double minRating) {
+	public List<StoreResponseDto> findByFilters(String name, Category category, Long minReviews,
+		Double minRating) {
 		List<StoreResponseDto> storeList;
-		if(name != null || category != null || minReviews != null || minRating != null){
+		if (name != null || category != null || minReviews != null || minRating != null) {
 			storeList = storeRepository.findByFilters(name, category, minReviews, minRating);
-		}else {
+		} else {
 			storeList = storeRepository.findAllStores();
 		}
-		if(storeList.isEmpty()){
+		if (storeList.isEmpty()) {
 			throw new BusinessException(ExceptionType.STORE_NOT_FOUND);
 		}
 		return storeList;
@@ -99,7 +103,8 @@ public class StoreService {
 		//favoriteRepository 에서 즐겨찾기 개수를 가져옴
 		Long favoriteCount = favoriteRepository.countByStoreId(storeId);
 		//menuRepository 가게에 존재하는 메뉴 리스트를 가져옴
-		List<MenuInStoreResponseDto> menuInStoreResponsDtoList = menuRepository.findAllByStoreId(storeId);
+		List<MenuInStoreResponseDto> menuInStoreResponsDtoList = menuRepository.findAllByStoreId(
+			storeId);
 
 		//위의 정보를 통해 반환 dto 생성
 		return new StoreMenuResponseDto(store, favoriteCount, menuInStoreResponsDtoList);
@@ -115,7 +120,7 @@ public class StoreService {
 	@Transactional
 	public StoreResponseDto setCloseStore(Long storeId, Long userId) {
 		Store store = findStoreOrElseThrow(storeId);
-		if(!store.getUser().getId().equals(userId)){
+		if (!store.getUser().getId().equals(userId)) {
 			throw new BusinessException(ExceptionType.UNAUTHORIZED_ACCESS);
 		}
 		//가게의 상태를 close로 변경
@@ -130,9 +135,9 @@ public class StoreService {
 	/********************중복되는 예외처리 코드 메서드로 분리*****************************/
 
 	//한 계정당 생성 가능한 가게의 수를 확인
-	private void isFullStores(User user){
+	private void isFullStores(User user) {
 		int countStores = storeRepository.findAllByUserId(user);
-		if(countStores >= 3){
+		if (countStores >= 3) {
 			throw new BusinessException(ExceptionType.ALREADY_FULL_STORE);
 		}
 	}
@@ -142,7 +147,7 @@ public class StoreService {
 		User user = userRepository.findById(userId).orElseThrow(
 			() -> new BusinessException(ExceptionType.USER_NOT_FOUND)
 		);
-		if (user.getUserStatus().equals(UserStatus.DELETE)){
+		if (user.getUserStatus().equals(UserStatus.DELETE)) {
 			throw new BusinessException(ExceptionType.DELETED_USER);
 		}
 		return user;
@@ -153,7 +158,7 @@ public class StoreService {
 		Store store = storeRepository.findById(storeId).orElseThrow(
 			() -> new BusinessException(ExceptionType.STORE_NOT_FOUND)
 		);
-		if (store.getStoreStatus().equals("CLOSE")){
+		if (store.getStoreStatus().equals(StoreStatus.CLOSE)) {
 			throw new BusinessException(ExceptionType.CLOSE_STORE);
 		}
 		return store;

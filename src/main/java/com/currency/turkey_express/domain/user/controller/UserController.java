@@ -8,7 +8,6 @@ import com.currency.turkey_express.domain.user.service.UserService;
 import com.currency.turkey_express.global.annotation.UserRequired;
 import com.currency.turkey_express.global.base.dto.MessageDto;
 import com.currency.turkey_express.global.base.entity.User;
-import com.currency.turkey_express.global.base.enums.user.UserType;
 import com.currency.turkey_express.global.constant.Const;
 import com.currency.turkey_express.global.exception.BusinessException;
 import com.currency.turkey_express.global.exception.ExceptionType;
@@ -146,7 +145,7 @@ public class UserController {
 	/**
 	 * 유저 단건 조회 API
 	 */
-	@UserRequired(vaild = UserType.CUSTOMER)
+	@UserRequired
 	@GetMapping("/{userId}")
 	public ResponseEntity<UserResponseDto> getUser(@PathVariable Long userId,
 		HttpServletRequest httpServletRequest) {
