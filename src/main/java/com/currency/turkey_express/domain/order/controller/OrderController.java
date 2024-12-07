@@ -67,6 +67,8 @@ public class OrderController {
 		// 쿠폰 할인 금액 계산
 		BigDecimal couponDiscountValue = calcCouponDiscountValue(couponResponseDto, totalPrice);
 
+		//TODO 유저에게 포인트 있는지 확인
+
 		// 쿠폰, 포인트 합이 총액을 넘을 수 없다.
 		if (totalPrice.compareTo(
 			couponDiscountValue.add(orderRequestDto.getPointPrice())) < 0) {
@@ -195,7 +197,7 @@ public class OrderController {
 		Map<String, String> errors = new HashMap<>();
 
 		//errors에 이름과 에러 메세지를 추가
-		errors.put("NO_EXIST_EXCEPTION", e.getMessage());
+		errors.put("ILLEGAL_ARGUMENT", e.getMessage());
 
 		//정보 담을 객체 생성(상태코드, 코드 값, 에러 정보)
 		ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.BAD_REQUEST,
