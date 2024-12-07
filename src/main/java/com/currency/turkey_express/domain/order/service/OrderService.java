@@ -11,6 +11,7 @@ import com.currency.turkey_express.domain.order.repository.OrderRepository;
 import com.currency.turkey_express.domain.point.repository.PointRepository;
 import com.currency.turkey_express.domain.store.repository.StoreRepository;
 import com.currency.turkey_express.domain.user.repository.UserRepository;
+import com.currency.turkey_express.global.base.entity.Coupon;
 import com.currency.turkey_express.global.base.entity.CouponList;
 import com.currency.turkey_express.global.base.entity.Order;
 import com.currency.turkey_express.global.base.entity.OrderMenuOption;
@@ -53,11 +54,19 @@ public class OrderService {
 	private final OrderMenuOptionRepository orderMenuOptionRepository;
 
 
-	public CouponResponseDto getCoupon(Long couponId) {
-		return new CouponResponseDto(
-			couponRepository.findById(couponId)
-				.orElseThrow(() -> new NoExistException("선택한 쿠폰이 존재하지 않습니다"))
-		);
+	public CouponResponseDto getCoupon(Long couponId, Long userId) {
+
+		Coupon coupon = couponRepository.findById(couponId)
+			.orElseThrow(() -> new NoExistException("선택한 쿠폰이 존재하지 않습니다"));
+
+		CouponList couponList = couponListRepository.findByUserIdAndCouponId(userId, couponId)
+			.orElseThrow(() -> new NoExistException("선택한 쿠폰을 보유하고 있지 않습니다."));
+
+		if (couponList.getStatus().equals(CouponStatus.EXPIRED)) {
+			throw new IllegalArgumentException("만료된 쿠폰입니다.");
+		}
+
+		return new CouponResponseDto(coupon);
 	}
 
 	public void createOrder(
