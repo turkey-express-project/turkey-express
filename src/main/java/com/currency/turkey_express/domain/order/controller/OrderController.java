@@ -7,6 +7,7 @@ import com.currency.turkey_express.domain.order.dto.CancleRequestDto;
 import com.currency.turkey_express.domain.order.dto.OrderCreateDto;
 import com.currency.turkey_express.domain.order.dto.OrderRequestDto;
 import com.currency.turkey_express.domain.order.service.OrderService;
+import com.currency.turkey_express.domain.user.service.UserService;
 import com.currency.turkey_express.global.annotation.UserRequired;
 import com.currency.turkey_express.global.base.dto.MessageDto;
 import com.currency.turkey_express.global.base.enums.user.UserType;
@@ -35,6 +36,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 public class OrderController {
 
 	private final OrderService orderService;
+	private final UserService userService;
 
 	/**
 	 * 장바구니 쿠키를 받아와서 주문을 생성하는 API
@@ -54,6 +56,13 @@ public class OrderController {
 
 		// 주문 금액 총합 객체 초기화, 장바구니에 있는 총합으로 초기화
 		BigDecimal totalPrice = cartData.getTotalPrice();
+
+		// 주문자에게 요청한 포인트가 있는 지 확인
+		if (orderService.getCustomerPointTotal(userId).compareTo(
+			orderRequestDto.getPointPrice()
+		) < 0) {
+			throw new IllegalArgumentException("사용 포인트가 보유한 포인트를 초과합니다");
+		}
 
 		//couponResponseDto 객체 초기화, 쿠폰 id 미제공 시 null로 초기화
 		//coupon Entity를 DTO로 변환해서 가져온다.
@@ -86,7 +95,7 @@ public class OrderController {
 
 		// 주문 완료 후 실제 포인트 차감, 포인트가 0보다 클 때
 		if (orderRequestDto.getPointPrice().compareTo(BigDecimal.ZERO) > 0) {
-			orderService.subtrackPoint(
+			orderService.subtractPoint(
 				userId,
 				orderRequestDto.getPointPrice()
 			);
@@ -145,7 +154,7 @@ public class OrderController {
 	) {
 		//주문 접근해서 다음 상태로 변경
 		orderService.processNext(orderId, userId);
-
+		
 		return new ResponseEntity<>(new MessageDto("다음 주문상태로 넘어갑니다"), HttpStatus.OK);
 	}
 
@@ -193,7 +202,7 @@ public class OrderController {
 		Map<String, String> errors = new HashMap<>();
 
 		//errors에 이름과 에러 메세지를 추가
-		errors.put("NO_EXIST_EXCEPTION", e.getMessage());
+		errors.put("ILLEGAL_ARGUMENT", e.getMessage());
 
 		//정보 담을 객체 생성(상태코드, 코드 값, 에러 정보)
 		ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.BAD_REQUEST,
