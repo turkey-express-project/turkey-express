@@ -145,7 +145,7 @@ public class OrderService {
 		coupon.setStatus(CouponStatus.EXPIRED);
 	}
 
-	public void processNext(Long orderId, Long userId) {
+	public OrderStatus processNext(Long orderId, Long userId) {
 
 		// 요청 검증 단계
 
@@ -176,7 +176,7 @@ public class OrderService {
 			order.getOrderGroupIdentifier());
 
 		// 주문 목록들 상태 업데이트
-		orders.stream()
+		orders
 			.forEach(o -> {
 				o.setOrderStatus(orderStatuses[nextOrderIdx]);
 			});
@@ -184,7 +184,7 @@ public class OrderService {
 		// 주문 완료 상태 일 때, 포인트 적립
 
 		if (!orderStatuses[nextOrderIdx].equals(OrderStatus.DELIVERY_COMPLETE)) {
-			return;
+			return orderStatuses[nextOrderIdx];
 		}
 
 		BigDecimal ordersTotalPrice = orders.stream()
@@ -200,11 +200,14 @@ public class OrderService {
 			.reduce(BigDecimal.ZERO, BigDecimal::add);
 
 		BigDecimal addedPointPrice =
-			ordersTotalPrice.divide(BigDecimal.valueOf(3), RoundingMode.DOWN);
+			ordersTotalPrice.divide(BigDecimal.valueOf(100), RoundingMode.DOWN)
+				.multiply(BigDecimal.valueOf(3));
 
 		pointRepository.save(new Point(
-			user, addedPointPrice
+			orders.get(0).getUser(), addedPointPrice
 		));
+
+		return orderStatuses[nextOrderIdx];
 	}
 
 	public void cancleOrder(Long orderId, Long userId, CancleRequestDto cancleRequestDto) {
