@@ -252,7 +252,7 @@ public class OrderService {
 			.reduce(BigDecimal.ZERO, BigDecimal::add);
 
 		pointRepository.save(new Point(
-			user, orderPointPrice
+			orders.get(0).getUser(), orderPointPrice
 		));
 	}
 
