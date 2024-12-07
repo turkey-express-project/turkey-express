@@ -1,23 +1,26 @@
 package com.currency.turkey_express.domain.order.controller;
 
 import com.currency.turkey_express.domain.cart.dto.CartCookieDto;
+import com.currency.turkey_express.domain.cart.exception.NoExistException;
 import com.currency.turkey_express.domain.coupon.dto.CouponResponseDto;
 import com.currency.turkey_express.domain.order.dto.CancleRequestDto;
 import com.currency.turkey_express.domain.order.dto.OrderCreateDto;
 import com.currency.turkey_express.domain.order.dto.OrderRequestDto;
 import com.currency.turkey_express.domain.order.service.OrderService;
-import com.currency.turkey_express.domain.user.service.UserService;
-import com.currency.turkey_express.global.annotation.LoginRequired;
+import com.currency.turkey_express.global.annotation.UserRequired;
 import com.currency.turkey_express.global.base.dto.MessageDto;
+import com.currency.turkey_express.global.base.enums.user.UserType;
 import com.currency.turkey_express.global.constant.Const;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletRequest;
+import com.currency.turkey_express.global.exception.ExceptionResponse;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,32 +34,23 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 @RequiredArgsConstructor
 public class OrderController {
 
-	private final ObjectMapper objectMapper;
-
 	private final OrderService orderService;
-
-	private final UserService userService;
 
 	/**
 	 * 장바구니 쿠키를 받아와서 주문을 생성하는 API
 	 *
-	 * @param userId           세션에 있는 유저 아이디
-	 * @param encodedCartValue 쿠키에 있는 인코딩된 장바구니 데이터
-	 * @param request          요청 객체
-	 * @param orderRequestDto  주문시 요청 데이터 DTO
+	 * @param userId
+	 * @param cartData
+	 * @param orderRequestDto
+	 * @return
 	 */
-	@LoginRequired
+	@UserRequired(vaild = UserType.CUSTOMER)
 	@PostMapping("")
 	public ResponseEntity<MessageDto> createOrder(
 		@SessionAttribute(name = Const.LOGIN_USER) Long userId,
-		@CookieValue(value = "CART", required = false) String CartValue,
-		HttpServletRequest request,
+		@CookieValue(value = "CART", required = false) CartCookieDto cartData,
 		@RequestBody OrderRequestDto orderRequestDto
 	) {
-		//쿠키에 있는 장바구니 데이터를 Jackson으로 객체로 파싱하기 가져오기
-
-		CartCookieDto cartData = getCartCookieDto(
-			CartValue);
 
 		// 주문 금액 총합 객체 초기화, 장바구니에 있는 총합으로 초기화
 		BigDecimal totalPrice = cartData.getTotalPrice();
@@ -70,24 +64,13 @@ public class OrderController {
 			couponResponseDto = orderService.getCoupon(orderRequestDto.getCouponId());
 		}
 
-		//couponDiscountValue 객체 초기화, 쿠폰 Dto가 없다면 0으로 초기화
-		BigDecimal couponDiscountValue = new BigDecimal(0);
-
-		if (couponResponseDto != null) {
-			couponDiscountValue = totalPrice.divide(
-				BigDecimal.valueOf(Double.valueOf(couponResponseDto.getDiscountValue()) / 100D));
-		}
-
-		// couponDiscountValue 의 할인 금액 최대치 제한하기
-		if (couponResponseDto != null
-			&& couponDiscountValue.compareTo(couponResponseDto.getMaxDiscount()) > 0) {
-			couponDiscountValue = couponResponseDto.getMaxDiscount();
-		}
+		// 쿠폰 할인 금액 계산
+		BigDecimal couponDiscountValue = calcCouponDiscountValue(couponResponseDto, totalPrice);
 
 		// 쿠폰, 포인트 합이 총액을 넘을 수 없다.
 		if (totalPrice.compareTo(
 			couponDiscountValue.add(orderRequestDto.getPointPrice())) < 0) {
-			throw new RuntimeException("가격 총합보다 할인 가격이 더 클 수 없습니다.");
+			throw new IllegalArgumentException("가격 총합보다 할인 가격이 더 클 수 없습니다.");
 		}
 
 		// 장바구니 저장된 메뉴들을 주문 데이터 리스트로 변환, OrderCreateDto 객체 생성
@@ -120,24 +103,31 @@ public class OrderController {
 		return new ResponseEntity<>(new MessageDto("주문 요청 완료"), HttpStatus.CREATED);
 	}
 
-	private CartCookieDto getCartCookieDto(String CartValue) {
+	/**
+	 * 쿠폰 할인 금액 계산 함수
+	 *
+	 * @param couponResponseDto
+	 * @param totalPrice
+	 * @return
+	 */
+	private BigDecimal calcCouponDiscountValue(CouponResponseDto couponResponseDto,
+		BigDecimal totalPrice) {
+		// couponDiscountValue 객체 초기화, 쿠폰 Dto가 없다면 0으로 초기화
+		BigDecimal couponDiscountValue = new BigDecimal(0);
 
-		if (CartValue == null) {
-			throw new RuntimeException("장바구니 쿠키가 없습니다.");
+		if (couponResponseDto != null) {
+			couponDiscountValue = totalPrice.multiply(
+				BigDecimal.valueOf(couponResponseDto.getDiscountValue())
+					.divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP)
+			);
 		}
 
-		CartCookieDto cartData = null;
-
-		try {
-			cartData = objectMapper.readValue(CartValue, CartCookieDto.class);
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
+		// couponDiscountValue 의 할인 금액 최대치 제한하기
+		if (couponResponseDto != null
+			&& couponDiscountValue.compareTo(couponResponseDto.getMaxDiscount()) > 0) {
+			couponDiscountValue = couponResponseDto.getMaxDiscount();
 		}
-
-		if (cartData.getMenuList() == null || cartData.getMenuList().isEmpty()) {
-			throw new RuntimeException("장바구니에 메뉴를 담아주세요");
-		}
-		return cartData;
+		return couponDiscountValue;
 	}
 
 
@@ -148,7 +138,7 @@ public class OrderController {
 	 * @param orderId 주문 아이디
 	 * @return
 	 */
-	@LoginRequired
+	@UserRequired(vaild = UserType.OWNER)
 	@PatchMapping("/{orderId}")
 	public ResponseEntity<MessageDto> processOrder(
 		@SessionAttribute(name = Const.LOGIN_USER) Long userId,
@@ -168,7 +158,7 @@ public class OrderController {
 	 * @param cancleRequestDto 요청 취소 DTO
 	 * @return
 	 */
-	@LoginRequired
+	@UserRequired(vaild = UserType.OWNER)
 	@PostMapping("/{orderId}")
 	public ResponseEntity<MessageDto> cancleOrder(
 		@SessionAttribute(name = Const.LOGIN_USER) Long userId,
@@ -182,12 +172,36 @@ public class OrderController {
 	}
 
 
-	@LoginRequired
-	@PostMapping("/stores/orders/{orderId}")
-	public void searchStoreOrder(
-		@SessionAttribute(name = Const.LOGIN_USER) Long userId,
-		@PathVariable Long orderId
-	) {
+	@ExceptionHandler({NoExistException.class})
+	public ResponseEntity<ExceptionResponse> noExistExceptionHandleException(Exception e) {
 
+		//Map 생성(키랑 값 저장)
+		Map<String, String> errors = new HashMap<>();
+
+		//errors에 이름과 에러 메세지를 추가
+		errors.put("NO_EXIST_EXCEPTION", e.getMessage());
+
+		//정보 담을 객체 생성(상태코드, 코드 값, 에러 정보)
+		ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.NOT_FOUND,
+			HttpStatus.NOT_FOUND.value(), errors);
+
+		return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
 	}
+
+	@ExceptionHandler({IllegalArgumentException.class})
+	public ResponseEntity<ExceptionResponse> illegalArgumentExceptionHandleException(Exception e) {
+
+		//Map 생성(키랑 값 저장)
+		Map<String, String> errors = new HashMap<>();
+
+		//errors에 이름과 에러 메세지를 추가
+		errors.put("NO_EXIST_EXCEPTION", e.getMessage());
+
+		//정보 담을 객체 생성(상태코드, 코드 값, 에러 정보)
+		ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.BAD_REQUEST,
+			HttpStatus.BAD_REQUEST.value(), errors);
+
+		return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+	}
+
 }

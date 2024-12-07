@@ -5,8 +5,9 @@ import com.currency.turkey_express.domain.cart.dto.CartMenuResponseDto;
 import com.currency.turkey_express.domain.cart.dto.CartRequestDto;
 import com.currency.turkey_express.domain.cart.exception.NoExistException;
 import com.currency.turkey_express.domain.cart.service.CartService;
-import com.currency.turkey_express.global.annotation.LoginRequired;
+import com.currency.turkey_express.global.annotation.UserRequired;
 import com.currency.turkey_express.global.base.dto.MessageDto;
+import com.currency.turkey_express.global.base.enums.user.UserType;
 import com.currency.turkey_express.global.exception.BusinessException;
 import com.currency.turkey_express.global.exception.ExceptionResponse;
 import com.currency.turkey_express.global.exception.ExceptionType;
@@ -47,8 +48,7 @@ public class CartController {
 	 * @param cartRequestDto
 	 * @return
 	 */
-	// TODO 로그인 추가
-	@LoginRequired
+	@UserRequired(vaild = UserType.CUSTOMER)
 	@PostMapping("")
 	public ResponseEntity<MessageDto> addMenu(
 		@CookieValue(value = "CART", required = false) CartCookieDto cartCookieDto,
