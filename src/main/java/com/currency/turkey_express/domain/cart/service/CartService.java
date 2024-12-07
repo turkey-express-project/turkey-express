@@ -8,6 +8,7 @@ import com.currency.turkey_express.domain.menu.repository.MenuRepository;
 import com.currency.turkey_express.domain.menu.repository.MenuSubCategoryRepository;
 import com.currency.turkey_express.domain.menu.repository.MenuTopCategoryRepository;
 import com.currency.turkey_express.global.base.entity.Menu;
+import com.currency.turkey_express.global.base.enums.memu.MenuStatus;
 import com.currency.turkey_express.global.base.enums.store.StoreStatus;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,10 @@ public class CartService {
 
 		if (menu.getStore().getStoreStatus().equals(StoreStatus.CLOSE)) {
 			throw new IllegalArgumentException("폐점한 가게 메뉴입니다");
+		}
+
+		if (menu.getStatus().equals(MenuStatus.DELETED)) {
+			throw new IllegalArgumentException("삭제된 메뉴입니다");
 		}
 
 		List<MenuOptionSet> menuOptionSets =

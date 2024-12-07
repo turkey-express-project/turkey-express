@@ -14,6 +14,8 @@ import com.currency.turkey_express.global.base.enums.order.OrderStatus;
 import com.currency.turkey_express.global.base.enums.user.UserType;
 import com.currency.turkey_express.global.constant.Const;
 import com.currency.turkey_express.global.exception.ExceptionResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
@@ -52,8 +54,13 @@ public class OrderController {
 	public ResponseEntity<MessageDto> createOrder(
 		@SessionAttribute(name = Const.LOGIN_USER) Long userId,
 		@CookieValue(value = "CART", required = false) CartCookieDto cartData,
-		@RequestBody OrderRequestDto orderRequestDto
+		@RequestBody OrderRequestDto orderRequestDto,
+		HttpServletResponse response
 	) {
+
+		if (cartData == null) {
+			throw new IllegalArgumentException("장바구니가 없습니다");
+		}
 
 		// 주문 금액 총합 객체 초기화, 장바구니에 있는 총합으로 초기화
 		BigDecimal totalPrice = cartData.getTotalPrice();
@@ -109,6 +116,14 @@ public class OrderController {
 				orderRequestDto.getCouponId()
 			);
 		}
+
+		// 쿠키 비우기
+		Cookie cartContentCookie = new Cookie("CART", "");
+
+		cartContentCookie.setMaxAge(0);
+		cartContentCookie.setPath("/");
+
+		response.addCookie(cartContentCookie);
 
 		return new ResponseEntity<>(new MessageDto("주문 요청 완료"), HttpStatus.CREATED);
 	}
