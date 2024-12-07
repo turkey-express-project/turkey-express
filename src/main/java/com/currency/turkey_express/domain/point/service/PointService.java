@@ -20,7 +20,7 @@ public class PointService {
 	private final UserRepository userRepository;
 
 	/**
-	 * 유저별 포인트 조회 API
+	 * 고객별 포인트 조회 API
 	 */
 	public List<PointResponseDto> findAllPointList(Long userId, Long loginUserId) {
 		//사용자 id 확인

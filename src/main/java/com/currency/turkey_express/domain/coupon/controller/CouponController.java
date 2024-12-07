@@ -6,12 +6,15 @@ import com.currency.turkey_express.domain.coupon.dto.CouponRequestDto;
 import com.currency.turkey_express.domain.coupon.service.CouponService;
 import com.currency.turkey_express.global.annotation.UserRequired;
 import com.currency.turkey_express.global.base.enums.user.UserType;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +29,8 @@ public class CouponController {
 	private final CouponService couponService;
 
 	/**
-	 * 쿠폰 등록 API - 관리자 전용
+	 * 쿠폰 등록 API
+	 * - 관리자 전용
 	 */
 	@UserRequired(vaild = UserType.ADMIN)
 	@PostMapping
@@ -51,8 +55,17 @@ public class CouponController {
 	}
 
 	/**
-	 * 생성된 쿠폰 전체 조회 API
+	 * 생성된 쿠폰 전체 조회
+	 * - 관리자 전용
 	 */
+	@UserRequired(vaild = UserType.ADMIN)
+	@GetMapping
+	public ResponseEntity<List<CouponAllResponseDto>> findAllCoupons(
+		HttpServletRequest httpServletRequest) throws IOException {
 
+		List<CouponAllResponseDto> couponAllResponseDto = couponService.findAllCoupons();
+
+		return new ResponseEntity<>(couponAllResponseDto, HttpStatus.OK);
+	}
 
 }
