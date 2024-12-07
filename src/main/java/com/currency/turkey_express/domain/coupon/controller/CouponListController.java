@@ -79,6 +79,7 @@ public class CouponListController {
 
 	/**
 	 * 쿠폰 만료날짜가 되면 쿠폰 상태 변경 API
+	 * - 매일 자정마다 업데이트 실행
 	 */
-	
+
 }

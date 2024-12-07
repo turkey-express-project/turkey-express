@@ -10,11 +10,13 @@ import com.currency.turkey_express.global.base.entity.User;
 import com.currency.turkey_express.global.base.enums.coupon.CouponStatus;
 import com.currency.turkey_express.global.exception.BusinessException;
 import com.currency.turkey_express.global.exception.ExceptionType;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -96,6 +98,27 @@ public class CouponListService {
 			couponListResponseDtoList.add(couponListResponseDto);
 		}
 		return couponListResponseDtoList;
+	}
+
+	/**
+	 * 쿠폰 만료날짜가 되면 쿠폰 상태 변경 API
+	 * - 매일 자정마다 업데이트 실행
+	 */
+	@Scheduled(cron = "0 0 0 * * *")
+	@Transactional
+	public void updateCouponStatus() {
+
+		//현재 시간 가져오기
+		LocalDateTime now = LocalDateTime.now();
+
+		//만요일이 지나도 상태가 OK인 것을 찾기
+		List<Coupon> okCoupons = couponRepository.findByAfterEndDateAndStatusOk(now,
+			CouponStatus.OK);
+
+		//
+		for (Coupon coupon : okCoupons) {
+			coupon.updateCouponStatus(CouponStatus.EXPIRED);
+		}
 	}
 
 }
