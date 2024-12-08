@@ -10,7 +10,6 @@ import com.currency.turkey_express.global.base.entity.User;
 import com.currency.turkey_express.global.base.enums.coupon.CouponStatus;
 import com.currency.turkey_express.global.exception.BusinessException;
 import com.currency.turkey_express.global.exception.ExceptionType;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -110,9 +109,6 @@ public class CouponListService {
 	@Scheduled(cron = "0 */5 * * * *")
 	@Transactional
 	public void updateCouponStatus() {
-
-		//현재 시간 가져오기
-		LocalDateTime now = LocalDateTime.now();
 
 		//만요일이 지나도 상태가 OK인 것을 찾기
 		List<CouponList> okCoupons = couponListRepository.findByCouponEndDateAfterAndStatusOk();
