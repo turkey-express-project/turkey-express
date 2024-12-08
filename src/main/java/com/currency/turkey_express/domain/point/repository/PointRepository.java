@@ -17,4 +17,5 @@ public interface PointRepository extends JpaRepository<Point, Long> {
 		+ "FROM Point p "
 		+ "WHERE p.user.id = ?1")
 	BigDecimal getTotalPointsByUserId(Long userId);
+
 }
