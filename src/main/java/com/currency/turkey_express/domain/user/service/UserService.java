@@ -50,7 +50,8 @@ public class UserService {
 	}
 
 	/**
-	 * 로그인 API - 로그인시 totalPoint 자동으로 업데이트
+	 * 로그인 API
+	 * - 로그인시 totalPoint 자동으로 업데이트
 	 */
 	public User login(String email, String password) {
 
@@ -96,7 +97,7 @@ public class UserService {
 		}
 
 		//비밀번호 확인
-		if (!passwordEncoder.matches(user.getPassword(), userDeleteRequestDto.getPassword())) {
+		if (!passwordEncoder.matches(userDeleteRequestDto.getPassword(), user.getPassword())) {
 			throw new BusinessException(ExceptionType.PASSWORD_NOT_MATCH);
 		}
 
