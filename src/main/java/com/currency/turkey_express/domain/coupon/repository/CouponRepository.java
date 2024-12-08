@@ -14,5 +14,5 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
 			() -> new BusinessException(ExceptionType.COUPON_NOT_FOUND)
 		);
 	}
-
+	
 }

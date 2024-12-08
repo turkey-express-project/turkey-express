@@ -26,7 +26,7 @@ public class PointController {
 	private final PointService pointService;
 
 	/**
-	 * 유저별 포인트 조회 API
+	 * 고객별 포인트 조회 API
 	 */
 	@UserRequired(vaild = UserType.CUSTOMER)
 	@GetMapping

@@ -50,4 +50,5 @@ public class Coupon {
 		this.endDate = endDate;
 	}
 
+
 }
