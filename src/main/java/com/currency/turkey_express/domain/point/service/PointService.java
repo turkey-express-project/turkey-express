@@ -44,4 +44,9 @@ public class PointService {
 
 		return pointResponseDtoList;
 	}
+
+	/**
+	 * 만료일이 지나면 자동으로 포인트 차감하는 API
+	 */
+
 }
