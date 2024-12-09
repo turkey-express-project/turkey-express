@@ -20,13 +20,20 @@
 
 > 2024.12.04 - 2024.12.08
 
-## 🌱 개발 환경
+## 🛠️기술 스택
 
-- `IDE : IntelliJ`
-- `Java Development Kit : openjdk version '17.0.2'`
-- `Framework : springframework.boot version '3.3.5', Spring Data JPA`
-- `Database : MySQL version '8.0.40'`
-- `tool : Figma, ERD Cloud, Slack, Github & git`
+### 🌱 프로그래밍 언어
+
+<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white">
+
+### 🌱 개발 환경
+
+- **IDE** : IntelliJ
+- **JDK** : openjdk version '17.0.2'
+- **Framework** : springframework.boot version '3.3.5', Spring Data JPA
+- **Build Tool** : Gradle
+- **Database** : MySQL version '8.0.40'
+- **Tool** : Figma, ERD Cloud, Slack, Github & git, Postman
 
 ## 🪧 커밋 컨벤션
 
