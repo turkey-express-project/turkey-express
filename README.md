@@ -113,6 +113,8 @@
 <details>
 <summary>ERD</summary>
 
+- [ERD Cloud link](https://www.erdcloud.com/d/xavpoBJBtggtCNT82)
+
 ![image](https://github.com/user-attachments/assets/4211cd40-fcf1-407f-ac41-f06a7ce39745)
 </details>
 
