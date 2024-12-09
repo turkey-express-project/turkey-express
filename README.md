@@ -31,6 +31,7 @@
 - **IDE** : IntelliJ
 - **JDK** : openjdk version '17.0.2'
 - **Framework** : springframework.boot version '3.3.5', Spring Data JPA
+- **Library** : Lombok, Bcrypt
 - **Build Tool** : Gradle
 - **Database** : MySQL version '8.0.40'
 - **Tool** : Figma, ERD Cloud, Slack, Github & git, Postman
@@ -100,6 +101,8 @@
 
 <details>
 <summary>와이어 프레임</summary>
+
+- [Figma link](https://www.figma.com/design/iPLA5Mw1McTpW8hXIc9AuX/%EC%95%84%EC%9B%83%EC%86%8C%EC%8B%B1-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8?node-id=0-1&node-type=canvas)
 
 ![image](https://github.com/user-attachments/assets/8de36934-4330-4922-a0c1-6706e6e357d2)
 
