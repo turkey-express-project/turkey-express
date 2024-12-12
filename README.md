@@ -30,7 +30,7 @@
 
 - **IDE** : IntelliJ
 - **JDK** : openjdk version '17.0.2'
-- **Framework** : springframework.boot version '3.3.5', Spring Data JPA
+- **Framework** : springframework.boot version '3.4.0', Spring Data JPA
 - **Library** : Lombok, Bcrypt
 - **Build Tool** : Gradle
 - **Database** : MySQL version '8.0.40'
@@ -158,6 +158,50 @@
 
 > postman API Test & MySQL Workbench
 <details>
-<summary></summary>
+<summary>🙋 회원가입 & 회원탈퇴 & 로그인 & 로그아웃</summary>
 
+#### ⭐ 회원가입
+
+- 고객
+  ![회원가입 API - 고객](https://github.com/user-attachments/assets/7479a359-338d-4db2-8a7f-5da42e280b21)
+- 관리자
+  ![회원가입 API - 관리자](https://github.com/user-attachments/assets/193b000f-dff0-4ef8-964b-4827201fa93b)
+- 사장
+  ![회원가입 - 사장](https://github.com/user-attachments/assets/b5a1246e-0051-4cdb-8b5c-6f9c7aad56b1)
+- DB 조회
+  ![user 조회](https://github.com/user-attachments/assets/f5c20fe1-8328-4d58-b26a-9cf4a49af410)
+
+#### ⭐ 로그인
+
+![로그인 API - 고객](https://github.com/user-attachments/assets/912bed38-9837-454d-b66c-ad8620eae4df)
+
+#### ⭐ 로그아웃
+
+![image](https://github.com/user-attachments/assets/24df9a30-2e7a-40bb-a63e-8426521e6568)
+
+#### ⭐ 회원탈퇴
+
+#### ⭐ 사용자 단건 조회
+
+![image](https://github.com/user-attachments/assets/0c218536-d444-4158-9570-1c54aff8177c)
+</details>
+
+<details>
+<summary>🏪 가게 생성 & 가게 폐업 & 가게 조회 & 가게 정보 수정</summary>
+
+#### ⭐ 가게 생성
+
+![가게 생성](https://github.com/user-attachments/assets/f4231314-fe7c-4029-8fb7-e56187d41f3b)
+
+#### ⭐ 가게 폐업
+
+#### ⭐ 가게 조회
+
+- 가게 전체 조회
+  ![가게 전체 조회](https://github.com/user-attachments/assets/730d9d42-7e2e-4cd0-bd75-5b493a7aac35)
+- 가게 단건 조회 & 메뉴 조회
+
+#### ⭐ 가게 정보 수정
+
+![가게 수정](https://github.com/user-attachments/assets/9efe01c9-ca89-4d3f-a268-d31c2e74aa8b)
 </details>
