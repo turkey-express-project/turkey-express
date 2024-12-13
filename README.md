@@ -158,7 +158,7 @@
 
 > postman API Test & MySQL Workbench
 <details>
-<summary>🙋 회원가입 & 회원탈퇴 & 로그인 & 로그아웃</summary>
+<summary>🙋 회원가입 & 회원탈퇴 & 로그인 & 로그아웃 & 사용자 조회</summary>
 
 #### ⭐ 회원가입
 
@@ -181,6 +181,14 @@
 
 #### ⭐ 회원탈퇴
 
+![image](https://github.com/user-attachments/assets/2f489886-95cc-4cba-911d-cf90f0b0bc59)
+
+- 회원탈퇴 전 DB 조회
+  ![image](https://github.com/user-attachments/assets/a8438067-9b58-4950-bcd1-ff2bac0f2da3)
+  <br><br>
+- 회원탈퇴 후 DB 조회
+  ![image](https://github.com/user-attachments/assets/b752bf4b-519a-4e3f-ba14-24fdd4e4502c)
+
 #### ⭐ 사용자 단건 조회
 
 ![image](https://github.com/user-attachments/assets/0c218536-d444-4158-9570-1c54aff8177c)
@@ -193,15 +201,110 @@
 
 ![가게 생성](https://github.com/user-attachments/assets/f4231314-fe7c-4029-8fb7-e56187d41f3b)
 
+- DB 조회
+  ![image](https://github.com/user-attachments/assets/3e7a6a8d-5396-4275-84b2-f23d2fe15047)
+
 #### ⭐ 가게 폐업
+
+- DB 조회
 
 #### ⭐ 가게 조회
 
 - 가게 전체 조회
   ![가게 전체 조회](https://github.com/user-attachments/assets/730d9d42-7e2e-4cd0-bd75-5b493a7aac35)
+
 - 가게 단건 조회 & 메뉴 조회
+  ![image](https://github.com/user-attachments/assets/8072ad0e-82c4-404d-aa7f-8782d20048f7)
 
 #### ⭐ 가게 정보 수정
 
 ![가게 수정](https://github.com/user-attachments/assets/9efe01c9-ca89-4d3f-a268-d31c2e74aa8b)
+
+- DB 조회
+  ![image](https://github.com/user-attachments/assets/3d5d5bca-8a23-47a8-b34c-92df7c27228e)
+
 </details>
+
+<details>
+<summary>📋 메뉴 생성 & 메뉴 삭제 & 메뉴 수정 & 메뉴 상위, 하위 카테고리 생성</summary>
+
+#### ⭐ 메뉴 생성
+
+![image](https://github.com/user-attachments/assets/98e1bd96-64f6-41d8-b8d9-5c17cc1174b2)
+
+- DB 조회
+  ![image](https://github.com/user-attachments/assets/4745950f-293a-4a25-b162-f8e998405112)
+
+#### ⭐ 메뉴 수정
+
+![image](https://github.com/user-attachments/assets/10075dec-2390-426e-9207-5048d132ba69)
+
+- DB 조회
+  ![image](https://github.com/user-attachments/assets/4d5d3484-c283-4627-9928-fcf9a5359413)
+
+#### ⭐ 메뉴 삭제
+
+![image](https://github.com/user-attachments/assets/860e7d02-8d80-48a2-8659-3801eaf0774d)
+
+#### ⭐ 메뉴 옵션 : 상위 카테고리 생성
+
+![image](https://github.com/user-attachments/assets/6280db19-cc1f-40dc-8a07-a494cf8774e3)
+
+- DB 조회
+  ![image](https://github.com/user-attachments/assets/97a0122e-3d1e-4b00-a178-01d90562a227)
+
+#### ⭐ 메뉴 옵션 : 하위 카테고리 생성
+
+![image](https://github.com/user-attachments/assets/fffcdf70-3699-403d-9fb2-b9f5657a25aa)
+
+- DB 조회
+  ![image](https://github.com/user-attachments/assets/cb7447a2-b03f-4a6d-b876-8f951232ab23)
+
+</details>
+
+<details>
+<summary>🛒 장바구니 메뉴 담기</summary>
+
+#### ⭐
+
+</details>
+
+<details>
+<summary>📱 주문 생성 & 주문 거절 & 주문 상태 진행</summary>
+
+#### ⭐
+
+</details>
+
+<details>
+<summary>💬 리뷰 작성 & 리뷰 전체 조회 & 리뷰 별점별 조회</summary>
+
+#### ⭐
+
+</details>
+
+<details>
+<summary>🪙 포인트 조회</summary>
+
+#### ⭐
+
+</details>
+
+<details>
+<summary>🎫 쿠폰 등록 & 쿠폰 수령 & 등록된 쿠폰 전체 목록 조회 & 수령받은 쿠폰 목록 조회</summary>
+
+#### ⭐
+
+</details>
+
+<details>
+<summary>🩵 즐겨찾기 생성 & 즐겨찾기 삭제 & 즐겨찾기 조회</summary>
+
+#### ⭐
+
+</details>
+
+
+
+
+
