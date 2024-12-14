@@ -204,9 +204,12 @@
 - DB 조회
   ![image](https://github.com/user-attachments/assets/3e7a6a8d-5396-4275-84b2-f23d2fe15047)
 
-#### ⭐ 가게 폐업
+#### ⭐ 가게 정보 수정
+
+![가게 수정](https://github.com/user-attachments/assets/9efe01c9-ca89-4d3f-a268-d31c2e74aa8b)
 
 - DB 조회
+  ![image](https://github.com/user-attachments/assets/3d5d5bca-8a23-47a8-b34c-92df7c27228e)
 
 #### ⭐ 가게 조회
 
@@ -216,12 +219,9 @@
 - 가게 단건 조회 & 메뉴 조회
   ![image](https://github.com/user-attachments/assets/8072ad0e-82c4-404d-aa7f-8782d20048f7)
 
-#### ⭐ 가게 정보 수정
-
-![가게 수정](https://github.com/user-attachments/assets/9efe01c9-ca89-4d3f-a268-d31c2e74aa8b)
+#### ⭐ 가게 폐업
 
 - DB 조회
-  ![image](https://github.com/user-attachments/assets/3d5d5bca-8a23-47a8-b34c-92df7c27228e)
 
 </details>
 
@@ -265,42 +265,108 @@
 <details>
 <summary>🛒 장바구니 메뉴 담기</summary>
 
-#### ⭐
+#### ⭐ 장바구니
+
+![image](https://github.com/user-attachments/assets/7628af57-521d-41d2-872a-5eef702c3f4b)
 
 </details>
 
 <details>
 <summary>📱 주문 생성 & 주문 거절 & 주문 상태 진행</summary>
 
-#### ⭐
+#### ⭐ 주문 생성
+
+![image](https://github.com/user-attachments/assets/f5b1790e-a090-40ae-a9f7-9332d7b6d480)
+
+- DB 조회
+  ![image](https://github.com/user-attachments/assets/1512b65a-2dcd-40db-abcd-e7fbd28a0208)
+
+#### ⭐ 주문 거절
+
+![image](https://github.com/user-attachments/assets/b5d1c0fb-d69e-41f8-b750-cb3e45f4462c)
+
+- DB 조회
+  ![image](https://github.com/user-attachments/assets/49e827f9-85d6-48d7-8714-3793c6ceb713)
+
+#### ⭐ 주문 상태 진행
+
+- 조리중
+  ![image](https://github.com/user-attachments/assets/0b19709b-38cf-4849-9eec-31d1b830a07f)
+- 배달 완료
+  ![image](https://github.com/user-attachments/assets/fcf6f696-1be9-4810-a653-5b202938d651)
+- DB 조회
+  ![image](https://github.com/user-attachments/assets/16388e59-a9bc-443f-9d34-ad0c3ffbf39d)
 
 </details>
 
 <details>
 <summary>💬 리뷰 작성 & 리뷰 전체 조회 & 리뷰 별점별 조회</summary>
 
-#### ⭐
+#### ⭐ 리뷰 작성
+
+#### ⭐ 리뷰 전체 조회
+
+#### ⭐ 리뷰 별점별 조회
 
 </details>
 
 <details>
 <summary>🪙 포인트 조회</summary>
 
-#### ⭐
+#### ⭐ 유저별 포인트 조회
+
+![image](https://github.com/user-attachments/assets/8e88cf39-4fcd-4450-b96c-989e6ac0d0b8)
+
+- DB 조회
+  ![2024-12](https://github.com/user-attachments/assets/95c33dbb-55e5-43ba-880a-db3eb8b49246)
+  <br><br>
+- 주문시 포인트 사용 DB 조회
+
+![image](https://github.com/user-attachments/assets/46d969c8-4df6-4ab1-bddb-f87ca8603385)
 
 </details>
 
 <details>
 <summary>🎫 쿠폰 등록 & 쿠폰 수령 & 등록된 쿠폰 전체 목록 조회 & 수령받은 쿠폰 목록 조회</summary>
 
-#### ⭐
+#### ⭐ 쿠폰 등록
+
+![image](https://github.com/user-attachments/assets/a5cfe3f9-2dfd-4858-a65c-1e8c4ecdbf65)
+
+- DB 조회
+  ![image](https://github.com/user-attachments/assets/e1e02c50-d5cf-459a-a22d-2b820592f76a)
+
+#### ⭐ 등록된 쿠폰 전체 목록 조회 - 관리자
+
+![image](https://github.com/user-attachments/assets/1a7fe7a4-b0a2-4fdb-9c14-5a5a1f374183)
+
+- DB 조회
+  ![image](https://github.com/user-attachments/assets/e26c769b-9d0b-460e-82ac-24c34a6e6d15)
+
+#### ⭐ 쿠폰 수령
+
+![image](https://github.com/user-attachments/assets/86094aaa-9f26-4e08-89ff-265d21279b9b)
+
+- DB 조회
+  ![image](https://github.com/user-attachments/assets/bd86f321-6cf8-430a-9269-9215860095e8)
+
+#### ⭐ 수령받은 쿠폰 목록 조회 - 사용자
+
+![image](https://github.com/user-attachments/assets/8e4be64b-d825-4d94-96d0-80af39a2f289)
+
+- DB 조회
+  ![image](https://github.com/user-attachments/assets/00820b85-24ad-4f9c-acff-dbbc3a539acf)
 
 </details>
 
 <details>
 <summary>🩵 즐겨찾기 생성 & 즐겨찾기 삭제 & 즐겨찾기 조회</summary>
 
-#### ⭐
+#### ⭐ 즐겨찾기 생성
+
+#### ⭐ 즐겨찾기 삭제
+
+#### ⭐ 즐겨찾기 조회
 
 </details>
 
