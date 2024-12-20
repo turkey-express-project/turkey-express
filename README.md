@@ -221,7 +221,10 @@
 
 #### ⭐ 가게 폐업
 
-- DB 조회
+![image](https://github.com/user-attachments/assets/005ef92d-4d45-45bc-9ae8-c5a3f65bb293)
+
+- id 3번 스토어 DB 조회
+  ![image](https://github.com/user-attachments/assets/466cde06-a978-4bcf-8799-58cac95a03b5)
 
 </details>
 
@@ -304,10 +307,18 @@
 
 #### ⭐ 리뷰 작성
 
+![image](https://github.com/user-attachments/assets/cc00210d-a976-44e3-8ae4-957ea45a541d)
+
+- DB 조회
+  ![image](https://github.com/user-attachments/assets/0568bc39-46ae-43da-ba3e-adb90c6e388f)
+
 #### ⭐ 리뷰 전체 조회
+
+![image](https://github.com/user-attachments/assets/330239c7-eda7-4f8c-84b2-097a125a5e47)
 
 #### ⭐ 리뷰 별점별 조회
 
+![image](https://github.com/user-attachments/assets/ec3ae77c-f7be-4cba-a471-d33fe4e3687f)
 </details>
 
 <details>
@@ -369,6 +380,10 @@
 - DB 조회
   ![image](https://github.com/user-attachments/assets/27bb84d7-a711-49c2-b5ba-7dc2fed30e0e)
 
+#### ⭐ 즐겨찾기 조회
+
+![image](https://github.com/user-attachments/assets/97039643-efee-4c32-8b8e-18c01ce6850c)
+
 #### ⭐ 즐겨찾기 삭제
 
 ![image](https://github.com/user-attachments/assets/ed048682-5912-4a6c-b31f-e5695d3cdd05)
@@ -378,10 +393,6 @@
   <br><br>
 - 즐겨찾기 삭제 후 DB 조회
   ![image](https://github.com/user-attachments/assets/bdbc55a5-4812-4710-8b5d-bf72bbd5a239)
-
-#### ⭐ 즐겨찾기 조회
-
-![image](https://github.com/user-attachments/assets/97039643-efee-4c32-8b8e-18c01ce6850c)
 
 </details>
 
